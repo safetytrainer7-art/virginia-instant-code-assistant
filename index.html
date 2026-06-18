@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VICA - Virginia Instant Code Assistance</title>
     <style>
-        /* FULL DEVICE INTERFACE RESET */
+        /* TACTICAL HIGH-CONTRAST MOBILE WORKSPACE */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body, html { 
             width: 100%; 
@@ -18,7 +19,7 @@
             touch-action: none;
         }
 
-        /* MASTER BACKDROP CANVAS - MAPS gggg.jpg, AUTODRAWS NATIVE BASE GRID IF MISSING */
+        /* MASTER BACKDROP CANVAS - ARCHITECTED TO DISPLAY YOUR DESIGN */
         .app-workspace-canvas {
             position: relative;
             width: 100%;
@@ -35,7 +36,7 @@
             padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom)) 1rem;
         }
 
-        /* FALLBACK TEXT LINE IF IMAGE FAILS TO ENGAGE */
+        /* FALLBACK TEXT LINE IF THE FILE ENCOUNTERS PORTAL DELAYS */
         .fallback-header {
             text-align: center;
             border-bottom: 2px solid #eab308;
@@ -46,7 +47,7 @@
         .fallback-header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; color: #fff; }
         .fallback-header p { font-size: 0.7rem; font-weight: 800; color: #eab308; text-transform: uppercase; margin-top: 0.15rem; }
 
-        /* INTERACTIVE HOTSPOT LAYOUT DECK */
+        /* INTERACTIVE COMMAND HOTSPOT GRID LAYOUT */
         .grid-hotspot-container {
             width: 100%;
             display: grid;
@@ -56,7 +57,7 @@
             margin-top: 1rem;
         }
 
-        /* HIGH-VISIBILITY EMBOSSED TOUCH MEDALLIONS */
+        /* HIGH-VISIBILITY TOUCH MEDALLIONS */
         .hotspot-tile {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border: 3px solid #eab308;
@@ -80,7 +81,7 @@
         .coin-title { font-size: 0.95rem; font-weight: 900; text-transform: uppercase; color: #eab308; }
         .coin-subtext { font-size: 0.55rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-top: 0.1rem; }
 
-        /* CENTRAL TALK-TO-LEX PANEL HOTSPOT */
+        /* TACTICAL CENTRAL TWO-WAY SPEAKER PANELS */
         .voice-mic-hotspot {
             width: 100%;
             background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
@@ -98,7 +99,7 @@
         .pulse-dot { width: 10px; height: 10px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 8px #38bdf8; animation: blink 0.8s infinite alternate; }
         .voice-subline { font-size: 0.7rem; font-weight: 700; color: #cbd5e1; margin-top: 0.25rem; text-transform: uppercase; }
 
-        /* SLIDE OVER WORKSPACE PANEL FOR LAWS SELECTION */
+        /* SLIDE OVER SHEET WORKSPACE FOR LIS DATABASE BROWSING */
         .slide-over-workspace {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -121,7 +122,7 @@
         .statute-head { font-size: 1rem; font-weight: 800; color: #fff; margin-top: 0.15rem; }
         .statute-body { font-size: 0.8rem; color: #cbd5e1; margin-top: 0.4rem; line-height: 1.4; }
 
-        /* ADVANCED VOICE TRANSLATION MODAL INTERCEPTOR */
+        /* AUDIO INTERCEPT TRANSMISSION READING LAYER */
         .voice-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 3, 7, 0.98); z-index: 200;
@@ -133,7 +134,7 @@
         .voice-wave-rack { display: flex; align-items: center; gap: 4px; height: 32px; }
         .wave-bar { width: 4px; height: 8px; background: #38bdf8; border-radius: 3px; animation: bounce 0.4s infinite alternate; }
 
-        /* APP FOOTER LEGACY SIGN-OFF */
+        /* FOOTER DESIGN PROFILE */
         .lex-footer { text-align: center; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); width: 100%; }
         .footer-tag { color: #3b82f6; font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         .footer-name { color: #fff; font-size: 1.25rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; margin: 0.1rem 0; }
@@ -153,7 +154,7 @@
             <p>Law Enforcement Expert System</p>
         </header>
 
-        <!-- THE 4 EMBOSSED MEDALLION HOTSPOTS -->
+        <!-- THE 4 TARGET HOTSPOTS -->
         <main class="grid-hotspot-container">
             <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('criminal')">
                 <span class="coin-icon">⚖️</span>
@@ -177,7 +178,7 @@
             </div>
         </main>
 
-        <!-- TWO-WAY CONVERSATIONAL PIPELINE BUTTON HOTSPOT -->
+        <!-- TWO-WAY CONVERSATIONAL PANEL ACTUATOR -->
         <div class="voice-mic-hotspot" onclick="engageAdvancedConversationalPipeline()">
             <div class="voice-title">
                 <span class="pulse-dot"></span>
@@ -195,7 +196,7 @@
 
     </div>
 
-    <!-- FULL SCREEN SLIDE OVER DISPLAY SPACE -->
+    <!-- FULL SCREEN SLIDE OVER SHEET WORKSPACE DISPLAY -->
     <div id="slideOverWorkspace" class="slide-over-workspace">
         <div class="slide-header">
             <div id="slideCategoryTitle" class="slide-title">LIS REGISTRY SEARCH</div>
@@ -204,7 +205,7 @@
         <div id="slideScrollArea" class="slide-scroll-body"></div>
     </div>
 
-    <!-- AUDIO INTERCEPT WAVE FEEDBACK MODAL PANEL -->
+    <!-- AUDIO TRANSLATION CONSOLE INTERCEPT VIEW SCREEN -->
     <div id="voiceInterceptModal" class="voice-modal-overlay">
         <div id="voiceStatusLabel" class="voice-status-msg">Advanced AI Channel Open</div>
         <div id="voiceTranscriptView" class="voice-transcript-window">"Describe the incident field conditions..."</div>
@@ -219,6 +220,9 @@
     </div>
 
     <script>
+        // CRITICAL GLOBAL UTTERANCE QUEUE LAYER - FORCES THE PHONE HARDWARE TO RETAIN TEXT-TO-SPEECH CHANNELS
+        window.lexUtteranceQueue = [];
+
         // MASTER STATE LEGISLATIVE CACHE
         const LIS_Statute_Registry = {
             criminal: [
@@ -242,7 +246,7 @@
         let activeMicEngine = null;
 
         function deployVirginiaStatuteWorkspace(category) {
-            window.speechSynthesis.cancel();
+            forceClearAudioEnginePipeline();
             const slideView = document.getElementById('slideOverWorkspace');
             const titleLabel = document.getElementById('slideCategoryTitle');
             const scrollArea = document.getElementById('slideScrollArea');
@@ -261,10 +265,10 @@
             slideView.style.display = 'flex';
         }
 
-        function secureCloseSlideOver() { window.speechSynthesis.cancel(); document.getElementById('slideOverWorkspace').style.display = 'none'; }
+        function secureCloseSlideOver() { forceClearAudioEnginePipeline(); document.getElementById('slideOverWorkspace').style.display = 'none'; }
 
         function engageAdvancedConversationalPipeline() {
-            window.speechSynthesis.cancel();
+            forceClearAudioEnginePipeline();
             const modal = document.getElementById('voiceInterceptModal');
             const statusLabel = document.getElementById('voiceStatusLabel');
             const transcriptView = document.getElementById('voiceTranscriptView');
@@ -286,7 +290,7 @@
                     const officerConversationalText = event.results[0][0].transcript;
                     transcriptView.innerText = `"${officerConversationalText}"`;
                     statusLabel.innerText = "🧠 Analyzing Scenario Meaning...";
-                    setTimeout(() => { processAdvancedBrainInterpretation(officerConversationalText); }, 800);
+                    setTimeout(() => { processAdvancedBrainInterpretation(officerConversationalText); }, 500);
                 };
 
                 activeMicEngine.onerror = () => { triggerConversationalFallback(); };
@@ -301,8 +305,8 @@
             setTimeout(() => {
                 transcriptView.innerText = '"LEX, check armed robbery statute"';
                 statusLabel.innerText = "🧠 Scenario Meaning Isolated: § 18.2-58 Triggered";
-                setTimeout(() => { processAdvancedBrainInterpretation("robbery"); }, 1200);
-            }, 1500);
+                setTimeout(() => { processAdvancedBrainInterpretation("robbery"); }, 800);
+            }, 1200);
         }
 
         function processAdvancedBrainInterpretation(naturalSpeechInput) {
@@ -333,35 +337,68 @@
             executeAdvancedDynamicVocalStream(responseHeadline, responseExplanation, true);
         }
 
-        // GLITCH REMOVED HERE: ALL STRING VARIABLES MATCH COGNITIVE ROUTER
+        // HARD RESET FUNCTION: PURGES JAMMED CHANNELS IMMEDIATELY BEFORE ANY OUTPUT TRIP
+        function forceClearAudioEnginePipeline() {
+            try {
+                window.speechSynthesis.cancel();
+                window.lexUtteranceQueue = [];
+            } catch(e) { console.log(e); }
+        }
+
+        // RE-ENGINEERED UNINTERRUPTED VOCAL TRANSMISSION ROUTINE
         function executeAdvancedDynamicVocalStream(headerText, descriptiveText, autoHideModal = false) {
-            window.speechSynthesis.cancel();
-            const compiledParagraph = headerText + " " + descriptiveText;
+            // Step 1: Force reset the pipeline
+            forceClearAudioEnginePipeline();
+            
+            // Step 2: Formulate clear legal prompt string
+            const compiledParagraph = headerText + " . " + descriptiveText;
+            
+            // Step 3: Instantiate core hardware connection wrapper
             const conversationalUtterance = new SpeechSynthesisUtterance(compiledParagraph);
             conversationalUtterance.rate = 0.95;
+            conversationalUtterance.volume = 1.0;
+            conversationalUtterance.pitch = 1.0;
 
+            // Step 4: Inject system voice arrays
             const structuralSystemVoices = window.speechSynthesis.getVoices();
             const verifiedMaleProfile = structuralSystemVoices.find(v => 
                 v.name.toLowerCase().includes('google us english male') || 
                 v.name.toLowerCase().includes('david') || 
                 v.lang.includes('en-US')
             );
-            if (verifiedMaleProfile) conversationalUtterance.voice = verifiedMaleProfile;
+            if (verifiedMaleProfile) {
+                conversationalUtterance.voice = verifiedMaleProfile;
+            }
 
-            conversationalUtterance.onend = () => { if (autoHideModal) document.getElementById('voiceInterceptModal').style.display = 'none'; };
-            window.speechSynthesis.speak(conversationalUtterance);
+            // Step 5: Route end execution triggers
+            conversationalUtterance.onend = () => { 
+                if (autoHideModal) {
+                    document.getElementById('voiceInterceptModal').style.display = 'none';
+                }
+            };
+
+            // Step 6: HARDWARE SECURITY ANCHOR - Push to global queue to bypass browser thread crashes
+            window.lexUtteranceQueue.push(conversationalUtterance);
+
+            // Step 7: Fire sound waves instantly inside user interaction wrapper
+            setTimeout(() => {
+                window.speechSynthesis.speak(conversationalUtterance);
+            }, 50);
         }
 
         function emergencyKillVoiceSession() {
             if (activeMicEngine) activeMicEngine.stop();
-            window.speechSynthesis.cancel();
+            forceClearAudioEnginePipeline();
             document.getElementById('voiceInterceptModal').style.display = 'none';
         }
 
-        window.speechSynthesis.getVoices();
-        if (window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = window.speechSynthesis.getVoices;
-        }
+        // Pre-cache hardware routing lines
+        try {
+            window.speechSynthesis.getVoices();
+            if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                window.speechSynthesis.onvoiceschanged = window.speechSynthesis.getVoices;
+            }
+        } catch(e) {}
     </script>
 </body>
 </html>
