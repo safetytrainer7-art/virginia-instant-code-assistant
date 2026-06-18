@@ -20,21 +20,25 @@ function processVerbalOfficerCommand(spokenPhrase) {
         responseAudioPhrase = "Command phrase registered via LIS tracking portal, but no direct statute code match was isolated. Please select a primary grid card category on screen.";
     }
 
-    // UPDATE: Update the screen text, but DO NOT close the panel or kill the sound!
+    // Update the on-screen text box cleanly
     promptLabel.innerText = `📢 STREAMING LIS CODE: ${searchTargetCode}`;
     
-    // Force the text-to-speech to speak completely before anything else happens
+    // Stop the microphone completely BEFORE starting the speakers so the phone doesn't mute itself
+    if (voiceRecognitionInstance) {
+        voiceRecognitionInstance.stop();
+    }
+    
+    // Fire the voice response
     speakStatuteAloud(responseAudioPhrase);
 }
 
-// UPDATE: Separate function to handle clear, uninterrupted speech
 function speakStatuteAloud(phrase) {
-    window.speechSynthesis.cancel(); // Clear any jammed audio threads
+    window.speechSynthesis.cancel(); // Force clear any jammed audio blocks
     
     const utterance = new SpeechSynthesisUtterance(phrase);
-    utterance.rate = 0.95; // Clear tactical speaking pace
+    utterance.rate = 0.95; // Maintain a clear, tactical speaking pace
     
-    // Crucial: The console box will now ONLY hide AFTER the voice is completely done speaking!
+    // Hide the console block ONLY when she is completely done talking
     utterance.onend = () => { 
         document.getElementById('voiceConsole').style.display = 'none'; 
     };
