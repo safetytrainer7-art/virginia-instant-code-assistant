@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VICA - Virginia Instant Code Assistance</title>
     <style>
-        /* TACTICAL HIGH-CONTRAST MOBILE WORKSPACE */
+        /* TACTICAL DEVICE INTERFACE RESET */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body, html { 
             width: 100%; 
@@ -19,7 +19,7 @@
             touch-action: none;
         }
 
-        /* MASTER BACKDROP CANVAS - ARCHITECTED TO DISPLAY YOUR DESIGN */
+        /* MASTER BACKGROUND CANVAS - LOOKS FOR gggg.jpg, AUTODRAWS BASE IF MISSING */
         .app-workspace-canvas {
             position: relative;
             width: 100%;
@@ -148,13 +148,11 @@
 
     <div class="app-workspace-canvas">
         
-        <!-- HEADER PLATE -->
         <header class="fallback-header">
             <h1>VIRGINIA VICA</h1>
             <p>Law Enforcement Expert System</p>
         </header>
 
-        <!-- THE 4 TARGET HOTSPOTS -->
         <main class="grid-hotspot-container">
             <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('criminal')">
                 <span class="coin-icon">⚖️</span>
@@ -178,7 +176,6 @@
             </div>
         </main>
 
-        <!-- TWO-WAY CONVERSATIONAL PANEL ACTUATOR -->
         <div class="voice-mic-hotspot" onclick="engageAdvancedConversationalPipeline()">
             <div class="voice-title">
                 <span class="pulse-dot"></span>
@@ -187,7 +184,6 @@
             <div class="voice-subline">Tap once, describe scenario, and listen</div>
         </div>
 
-        <!-- FOOTER BLOCK -->
         <footer class="lex-footer">
             <div class="footer-tag">App Creator</div>
             <div class="footer-name">Earl A. Wood</div>
@@ -196,7 +192,6 @@
 
     </div>
 
-    <!-- FULL SCREEN SLIDE OVER SHEET WORKSPACE DISPLAY -->
     <div id="slideOverWorkspace" class="slide-over-workspace">
         <div class="slide-header">
             <div id="slideCategoryTitle" class="slide-title">LIS REGISTRY SEARCH</div>
@@ -205,7 +200,6 @@
         <div id="slideScrollArea" class="slide-scroll-body"></div>
     </div>
 
-    <!-- AUDIO TRANSLATION CONSOLE INTERCEPT VIEW SCREEN -->
     <div id="voiceInterceptModal" class="voice-modal-overlay">
         <div id="voiceStatusLabel" class="voice-status-msg">Advanced AI Channel Open</div>
         <div id="voiceTranscriptView" class="voice-transcript-window">"Describe the incident field conditions..."</div>
@@ -220,18 +214,19 @@
     </div>
 
     <script>
-        // CRITICAL GLOBAL UTTERANCE QUEUE LAYER - FORCES THE PHONE HARDWARE TO RETAIN TEXT-TO-SPEECH CHANNELS
+        // HARDWARE STORAGE ANCHOR FOR TEXT-TO-SPEECH
         window.lexUtteranceQueue = [];
 
-        // MASTER STATE LEGISLATIVE CACHE
+        // MASTER DEMO CACHE (EXPANDED REGISTRY)
         const LIS_Statute_Registry = {
             criminal: [
                 { code: "§ 18.2-57", title: "Assault and Battery on Law Enforcement", text: "If any person commits an assault or an assault and battery against another knowing or having reason to know that such other person is a full-time or part-time law-enforcement officer engaged in the execution of his public duties, such person is guilty of a Class 6 felony." },
                 { code: "§ 18.2-282", title: "Brandishing a Firearm", text: "It shall be unlawful for any person to point, hold or brandish any firearm or any object similar in appearance, whether capable of being fired or not, in such manner as to reasonably induce fear in the mind of another. Class 1 Misdemeanor." },
-                { code: "§ 18.2-58", title: "Robbery Statute", text: "An individual who commits robbery by causing serious bodily injury or utilizing a deadly weapon during a theft is guilty of a felony punishable by confinement in a state facility up to life." }
+                { code: "§ 18.2-60", title: "Threats of Death or Bodily Injury", text: "Any person who writes, types, or speaks any threat to kill or do bodily injury to a person or any member of his family, causing reasonable apprehension of death or bodily injury, is guilty of a Class 6 felony." }
             ],
             traffic: [
                 { code: "§ 46.2-852", title: "Reckless Driving (General Endangerment)", text: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving. Class 1 Misdemeanor." },
+                { code: "§ 46.2-894", title: "Leaving the Scene of an Accident (Hit and Run)", text: "The driver of any vehicle involved in an accident in which a person is injured or killed, or which results in property damage, shall immediately stop as close to the scene of the accident as possible without obstructing traffic and report his identity to law enforcement. Failure to do so constitutes a Class 5 Felony if an injury occurred." },
                 { code: "§ 18.2-266", title: "Driving Under the Influence (DUI)", text: "It shall be unlawful for any person to drive or operate any motor vehicle, engine or train while such person has a blood alcohol concentration of zero point zero eight percent or more by weight." }
             ],
             juvenile: [
@@ -290,7 +285,7 @@
                     const officerConversationalText = event.results[0][0].transcript;
                     transcriptView.innerText = `"${officerConversationalText}"`;
                     statusLabel.innerText = "🧠 Analyzing Scenario Meaning...";
-                    setTimeout(() => { processAdvancedBrainInterpretation(officerConversationalText); }, 500);
+                    setTimeout(() => { processAdvancedBrainInterpretation(officalConversationalText || officerConversationalText); }, 500);
                 };
 
                 activeMicEngine.onerror = () => { triggerConversationalFallback(); };
@@ -303,9 +298,9 @@
             const statusLabel = document.getElementById('voiceStatusLabel');
             const transcriptView = document.getElementById('voiceTranscriptView');
             setTimeout(() => {
-                transcriptView.innerText = '"LEX, check armed robbery statute"';
-                statusLabel.innerText = "🧠 Scenario Meaning Isolated: § 18.2-58 Triggered";
-                setTimeout(() => { processAdvancedBrainInterpretation("robbery"); }, 800);
+                transcriptView.innerText = '"LEX, check leaving the scene of an accident"';
+                statusLabel.innerText = "🧠 Scenario Meaning Isolated: § 46.2-894 Triggered";
+                setTimeout(() => { processAdvancedBrainInterpretation("accident"); }, 800);
             }, 1200);
         }
 
@@ -313,7 +308,13 @@
             const lowText = naturalSpeechInput.toLowerCase().replace(/[\.\,\?\!]/g, "").trim();
             let responseHeadline = ""; let responseExplanation = "";
 
-            if (lowText.includes("robbery") || lowText.includes("armed") || lowText.includes("theft") || lowText.includes("58")) {
+            if (lowText.includes("accident") || lowText.includes("scene") || lowText.includes("hit") || lowText.includes("894")) {
+                responseHeadline = "Scenario matches Virginia Code Section 46.2-894, Leaving the Scene of an Accident.";
+                responseExplanation = "The driver of any vehicle involved in an accident resulting in injury, death, or property damage must stop and report their identity. Failure to stop is a Class 5 Felony if a person was injured.";
+            } else if (lowText.includes("threat") || lowText.includes("kill") || lowText.includes("60")) {
+                responseHeadline = "Scenario matches Virginia Code Section 18.2-60, Threats of Death or Bodily Injury.";
+                responseExplanation = "Any person who communicates a threat to kill or do bodily injury to an individual or their family, creating reasonable apprehension, is guilty of a Class 6 felony.";
+            } else if (lowText.includes("robbery") || lowText.includes("armed") || lowText.includes("theft") || lowText.includes("58")) {
                 responseHeadline = "Based on your incident details, you are looking at Virginia Code Section 18.2-58, Robbery.";
                 responseExplanation = "The LIS register states that any individual who commits a theft and causes serious physical injury or uses a deadly weapon is guilty of a major felony. Confinement parameters escalate up to life imprisonment.";
             } else if (lowText.includes("trespass") || lowText.includes("leave") || lowText.includes("property") || lowText.includes("119")) {
@@ -325,9 +326,6 @@
             } else if (lowText.includes("brandish") || lowText.includes("gun") || lowText.includes("weapon") || lowText.includes("282")) {
                 responseHeadline = "Scenario matches Virginia Code Section 18.2-282, Brandishing a Firearm.";
                 responseExplanation = "It is unlawful to point or brandish any firearm, or object resembling a firearm, in a manner that induces reasonable fear in another person. This is a Class 1 misdemeanor.";
-            } else if (lowText.includes("reckless") || lowText.includes("speed") || lowText.includes("chase") || lowText.includes("852")) {
-                responseHeadline = "Scenario loops to Virginia Code Section 46.2-852, Reckless Driving.";
-                responseExplanation = "Operating a vehicle on any highway in a manner or speed that actively endangers the life, limb, or property of another individual constitutes a Class 1 misdemeanor.";
             } else {
                 responseHeadline = "Query Not Isolated.";
                 responseExplanation = "Command phrase registered via the portal, but that specific statute code is not loaded into the local demo cache yet. Tap the gold medallions directly to list active statutes.";
@@ -337,7 +335,6 @@
             executeAdvancedDynamicVocalStream(responseHeadline, responseExplanation, true);
         }
 
-        // HARD RESET FUNCTION: PURGES JAMMED CHANNELS IMMEDIATELY BEFORE ANY OUTPUT TRIP
         function forceClearAudioEnginePipeline() {
             try {
                 window.speechSynthesis.cancel();
@@ -345,21 +342,14 @@
             } catch(e) { console.log(e); }
         }
 
-        // RE-ENGINEERED UNINTERRUPTED VOCAL TRANSMISSION ROUTINE
         function executeAdvancedDynamicVocalStream(headerText, descriptiveText, autoHideModal = false) {
-            // Step 1: Force reset the pipeline
             forceClearAudioEnginePipeline();
-            
-            // Step 2: Formulate clear legal prompt string
             const compiledParagraph = headerText + " . " + descriptiveText;
-            
-            // Step 3: Instantiate core hardware connection wrapper
             const conversationalUtterance = new SpeechSynthesisUtterance(compiledParagraph);
             conversationalUtterance.rate = 0.95;
             conversationalUtterance.volume = 1.0;
             conversationalUtterance.pitch = 1.0;
 
-            // Step 4: Inject system voice arrays
             const structuralSystemVoices = window.speechSynthesis.getVoices();
             const verifiedMaleProfile = structuralSystemVoices.find(v => 
                 v.name.toLowerCase().includes('google us english male') || 
@@ -370,17 +360,14 @@
                 conversationalUtterance.voice = verifiedMaleProfile;
             }
 
-            // Step 5: Route end execution triggers
             conversationalUtterance.onend = () => { 
                 if (autoHideModal) {
                     document.getElementById('voiceInterceptModal').style.display = 'none';
                 }
             };
 
-            // Step 6: HARDWARE SECURITY ANCHOR - Push to global queue to bypass browser thread crashes
             window.lexUtteranceQueue.push(conversationalUtterance);
 
-            // Step 7: Fire sound waves instantly inside user interaction wrapper
             setTimeout(() => {
                 window.speechSynthesis.speak(conversationalUtterance);
             }, 50);
@@ -392,7 +379,6 @@
             document.getElementById('voiceInterceptModal').style.display = 'none';
         }
 
-        // Pre-cache hardware routing lines
         try {
             window.speechSynthesis.getVoices();
             if (window.speechSynthesis.onvoiceschanged !== undefined) {
