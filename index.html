@@ -394,6 +394,47 @@
                 window.speechSynthesis.onvoiceschanged = window.speechSynthesis.getVoices;
             }
         } catch(e) {}
-    </script>
+    </// CALIBRATED AUDIO STREAM PIPELINE FORCING MALE ENGINE LOGIC
+function executeAdvancedDynamicVocalStream(headerText, descriptiveText, autoHideModal = false) {
+    forceClearAudioEnginePipeline();
+    
+    const compiledParagraph = headerText + " . " + descriptiveText;
+    const conversationalUtterance = new SpeechSynthesisUtterance(compiledParagraph);
+    
+    conversationalUtterance.rate = 0.95; // Authoritative, tactical speed
+    conversationalUtterance.volume = 1.0;
+    conversationalUtterance.pitch = 0.95; // Slightly lower pitch for a deeper profile
+
+    // FORCE DETECTOR: Aggressively searches the hardware layer for male profiles
+    const structuralSystemVoices = window.speechSynthesis.getVoices();
+    
+    let selectedProfile = structuralSystemVoices.find(v => 
+        v.name.toLowerCase().includes('google us english male') || 
+        v.name.toLowerCase().includes('david') || 
+        v.name.toLowerCase().includes('microsoft male') ||
+        v.name.toLowerCase().includes('male')
+    );
+
+    // Safety fallback: If those specific variants aren't on your phone, find any standard US English profile
+    if (!selectedProfile) {
+        selectedProfile = structuralSystemVoices.find(v => v.lang.includes('en-US'));
+    }
+    
+    if (selectedProfile) {
+        conversationalUtterance.voice = selectedProfile;
+    }
+
+    conversationalUtterance.onend = () => { 
+        if (autoHideModal) {
+            document.getElementById('voiceInterceptModal').style.display = 'none';
+        }
+    };
+
+    window.lexUtteranceQueue.push(conversationalUtterance);
+
+    setTimeout(() => {
+        window.speechSynthesis.speak(conversationalUtterance);
+    }, 50);
+}script>
 </body>
 </html>
