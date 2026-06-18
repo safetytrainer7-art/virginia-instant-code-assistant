@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -262,7 +261,6 @@
 
     <div class="app-container">
         
-        <!-- HEADER MODULE FRAME -->
         <header class="lex-header">
             <div class="header-brand-block">
                 <div class="brand-logo-badge">L</div>
@@ -280,18 +278,15 @@
             </div>
         </header>
 
-        <!-- SECURE SYSTEM KEY PORTAL FOR STATE OF VIRGINIA LIS ACCESS -->
         <div class="lis-config-gate">
             <label>Virginia LIS Legislative API Token</label>
             <input type="password" id="lisApiKey" class="identity-field" style="color:#a855f7;" value="VIRGINIA-LIS-SECURE-FREE-KEY-2026" placeholder="Enter Registered LIS API Key">
         </div>
 
-        <!-- IDENTITY PORTAL INPUT -->
         <div class="identity-input-panel">
             <input type="text" id="badgeInput" class="identity-field" value="AMHERST CO. DEPUTY WOOD" placeholder="+ Enter your Call Sign / Badge Number" autocomplete="off">
         </div>
 
-        <!-- INTRO GREETING CARD MODULE -->
         <div class="lex-greeting-card">
             <div class="greeting-avatar-wrapper">
                 <span class="greeting-avatar">⚖️</span>
@@ -302,7 +297,6 @@
             </div>
         </div>
 
-        <!-- TACTICAL CORE GRID -->
         <main class="category-grid">
             
             <div class="cat-card cat-criminal" onclick="fetchLiveVirginiaStatute('criminal')">
@@ -317,7 +311,6 @@
                 <span class="cat-subtext">LIS Live Roadside Tracking Array</span>
             </div>
 
-            <!-- LIVE DYNAMIC STORAGE AND EXPANSION DRAW FOR RETRIEVED STATUTES -->
             <div id="codeDrawer" class="expansion-drawer"></div>
 
             <div class="cat-card cat-game" onclick="fetchLiveVirginiaStatute('game')">
@@ -334,7 +327,6 @@
 
         </main>
 
-        <!-- ACTION BAR 1: TWO-WAY VOICE TRANSMITTER ENGINE -->
         <div class="action-bar-strip strip-ai-mode" onclick="engageTwoWayVoiceAI()">
             <div class="action-title-line">
                 <span class="ai-pulse-dot"></span>
@@ -343,7 +335,6 @@
             <div class="action-sub-line">Tap to speak · Two-Way Voice System · Continuous Audio Streaming</div>
         </div>
 
-        <!-- TWO-WAY AUDIO CONSOLE SHOWING SPEECH INS AND OUTS -->
         <div id="voiceConsole" class="voice-console-panel">
             <div id="voicePromptText" style="font-size:0.8rem; font-weight:800; color:#34d399; text-transform:uppercase;">📢 SYSTEM SCANNING ENVIRONMENT...</div>
             <div id="officerSpokenWordDisplay" style="font-size:0.75rem; color:#94a3b8; font-style:italic; margin-top:0.2rem; background:rgba(0,0,0,0.4); padding:4px; width:100%; border-radius:4px; min-height:22px;">"Waiting for voice command..."</div>
@@ -357,7 +348,6 @@
             <button class="cat-subtext" style="background:none; border:none; color:#dc2626; font-weight:800; text-transform:uppercase; cursor:pointer;" onclick="killVoiceSession(event)">[ Decommit AI Audio ]</button>
         </div>
 
-        <!-- ACTION BAR 2: COURT-READY COMPILATION CENTER -->
         <div class="action-bar-strip strip-report-mode" onclick="toggleCourtReportWorkspace()">
             <div class="action-title-line">
                 <span>📝</span>
@@ -366,7 +356,6 @@
             <div class="action-sub-line">Compiles verified LIS code metrics directly into a clean legal brief summary.</div>
         </div>
 
-        <!-- OFFICIAL LEGAL REPORT MANAGEMENT DECK WORKSPACE -->
         <div id="courtReportPanel" class="court-report-workspace">
             <h3 style="font-size:0.8rem; color:#c084fc; text-transform:uppercase; border-bottom:1px solid #312e81; padding-bottom:0.25rem;">⚖️ Court Dossier Configuration</h3>
             
@@ -389,7 +378,6 @@
             <button class="btn" style="background:#4f46e5; border-color:#818cf8; padding:0.6rem; font-size:0.8rem;" onclick="generateOfficialCourtReportPrintout()">Compile and Print Court Document</button>
         </div>
 
-        <!-- FOOTER STAMP -->
         <footer class="lex-footer">
             <div class="footer-tag">App Creator</div>
             <div class="footer-name">Earl Wood</div>
@@ -399,10 +387,8 @@
 
     </div>
 
-    <!-- HIDDEN DOM ELEMENT DOCK DESIGNED FOR LEGAL COURT PRINTS -->
     <div id="printContainer" class="court-print-template"></div>
 
-    <!-- SYSTEM BRAIN SCRIPT SECTION -->
     <script>
         // LIVE CLOCK REFRESH RUNNER
         function refreshClock() {
@@ -530,10 +516,12 @@
             }, 1500);
         }
 
-        // SPEECH PROCESSING ALGORITHM LINKED TO THE OFFICIAL LIS CACHE
+        // SPEECH PROCESSING ALGORITHM STRIPS PUNCTUATION AND CONVERTS TO LOWERCASE TO INSURE VERBAL MATCHES EVERY TIME
         function processVerbalOfficerCommand(spokenPhrase) {
             const promptLabel = document.getElementById('voicePromptText');
-            const textLower = spokenPhrase.toLowerCase();
+            
+            // HYPER-SECURITY FILTER: Strips out periods, commas, and formatting noise caused by mobile hardware transcription engines
+            const textLower = spokenPhrase.toLowerCase().replace(/[\.\,\?\!]/g, "").trim();
             
             let searchTargetCode = "";
             let responseAudioPhrase = "";
