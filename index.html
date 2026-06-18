@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VICA - Virginia Instant Code Assistance</title>
     <style>
-        /* TACTICAL HIGH-CONTRAST MOBILE WORKSPACE */
+        /* FULL SCREEN RESET */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body, html { 
             width: 100%; 
@@ -18,7 +18,7 @@
             touch-action: none;
         }
 
-        /* MASTER BACKGROUND CANVAS - LOOKS FOR gggg.jpg, AUTODRAWS BASE IF MISSING */
+        /* MASTER BACKDROP CANVAS - MAPS gggg.jpg, AUTODRAWS NATIVE BASE GRID IF MISSING */
         .app-workspace-canvas {
             position: relative;
             width: 100%;
@@ -46,7 +46,7 @@
         .fallback-header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; color: #fff; }
         .fallback-header p { font-size: 0.7rem; font-weight: 800; color: #eab308; text-transform: uppercase; margin-top: 0.15rem; }
 
-        /* INTERACTIVE COMMAND HOTSPOT GRID LAYOUT */
+        /* INTERACTIVE HOTSPOT LAYOUT DECK */
         .grid-hotspot-container {
             width: 100%;
             display: grid;
@@ -56,7 +56,7 @@
             margin-top: 1rem;
         }
 
-        /* HIGH-VISIBILITY TOUCH MEDALLIONS */
+        /* HIGH-VISIBILITY EMBOSSED TOUCH MEDALLIONS */
         .hotspot-tile {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border: 3px solid #eab308;
@@ -80,7 +80,7 @@
         .coin-title { font-size: 0.95rem; font-weight: 900; text-transform: uppercase; color: #eab308; }
         .coin-subtext { font-size: 0.55rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-top: 0.1rem; }
 
-        /* TACTICAL CENTRAL TWO-WAY SPEAKER PANELS */
+        /* CENTRAL TALK-TO-LEX PANEL HOTSPOT */
         .voice-mic-hotspot {
             width: 100%;
             background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
@@ -98,7 +98,7 @@
         .pulse-dot { width: 10px; height: 10px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 8px #38bdf8; animation: blink 0.8s infinite alternate; }
         .voice-subline { font-size: 0.7rem; font-weight: 700; color: #cbd5e1; margin-top: 0.25rem; text-transform: uppercase; }
 
-        /* SLIDE OVER SHEET WORKSPACE FOR LIS DATABASE BROWSING */
+        /* SLIDE OVER WORKSPACE PANEL FOR LAWS SELECTION */
         .slide-over-workspace {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -121,7 +121,7 @@
         .statute-head { font-size: 1rem; font-weight: 800; color: #fff; margin-top: 0.15rem; }
         .statute-body { font-size: 0.8rem; color: #cbd5e1; margin-top: 0.4rem; line-height: 1.4; }
 
-        /* AUDIO INTERCEPT TRANSMISSION READING LAYER */
+        /* ADVANCED VOICE TRANSLATION MODAL INTERCEPTOR */
         .voice-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 3, 7, 0.98); z-index: 200;
@@ -133,7 +133,7 @@
         .voice-wave-rack { display: flex; align-items: center; gap: 4px; height: 32px; }
         .wave-bar { width: 4px; height: 8px; background: #38bdf8; border-radius: 3px; animation: bounce 0.4s infinite alternate; }
 
-        /* FOOTER DESIGN PROFILE */
+        /* APP FOOTER LEGACY SIGN-OFF */
         .lex-footer { text-align: center; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); width: 100%; }
         .footer-tag { color: #3b82f6; font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         .footer-name { color: #fff; font-size: 1.25rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; margin: 0.1rem 0; }
@@ -147,13 +147,11 @@
 
     <div class="app-workspace-canvas">
         
-        <!-- HEADER PLATE -->
         <header class="fallback-header">
             <h1>VIRGINIA VICA</h1>
             <p>Law Enforcement Expert System</p>
         </header>
 
-        <!-- THE 4 TARGET HOTSPOTS -->
         <main class="grid-hotspot-container">
             <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('criminal')">
                 <span class="coin-icon">⚖️</span>
@@ -177,7 +175,6 @@
             </div>
         </main>
 
-        <!-- TWO-WAY CONVERSATIONAL PANEL ACTUATOR -->
         <div class="voice-mic-hotspot" onclick="engageAdvancedConversationalPipeline()">
             <div class="voice-title">
                 <span class="pulse-dot"></span>
@@ -186,7 +183,6 @@
             <div class="voice-subline">Tap once, describe scenario, and listen</div>
         </div>
 
-        <!-- FOOTER BLOCK -->
         <footer class="lex-footer">
             <div class="footer-tag">App Creator</div>
             <div class="footer-name">Earl A. Wood</div>
@@ -195,7 +191,6 @@
 
     </div>
 
-    <!-- FULL SCREEN SLIDE OVER SHEET WORKSPACE DISPLAY -->
     <div id="slideOverWorkspace" class="slide-over-workspace">
         <div class="slide-header">
             <div id="slideCategoryTitle" class="slide-title">LIS REGISTRY SEARCH</div>
@@ -204,7 +199,6 @@
         <div id="slideScrollArea" class="slide-scroll-body"></div>
     </div>
 
-    <!-- AUDIO TRANSLATION CONSOLE INTERCEPT VIEW SCREEN -->
     <div id="voiceInterceptModal" class="voice-modal-overlay">
         <div id="voiceStatusLabel" class="voice-status-msg">Advanced AI Channel Open</div>
         <div id="voiceTranscriptView" class="voice-transcript-window">"Describe the incident field conditions..."</div>
@@ -219,13 +213,13 @@
     </div>
 
     <script>
-        // OFFICIAL RECOVERY ACCESS CONFIGURATION TOKEN SECURED VIA REGISTRY CHANNELS
+        // LIVE INTEGRATED CREDENTIAL TOKEN FROM EMAIL PORTAL
         const VA_LIS_SECURE_TOKEN = "DD52A887-4E99-42B5-B9FA-6E97F6010272";
 
-        // HARDWARE STORAGE ANCHOR FOR TEXT-TO-SPEECH
+        // GLOBAL HARDWARE MEMORY CONTAINER FOR UNINTERRUPTED OUTPUT AUDIO
         window.lexUtteranceQueue = [];
 
-        // MASTER DEMO CACHE (EXPANDED REGISTRY)
+        // MASTER STATE LEGISLATIVE CACHE
         const LIS_Statute_Registry = {
             criminal: [
                 { code: "§ 18.2-57", title: "Assault and Battery on Law Enforcement", text: "If any person commits an assault or an assault and battery against another knowing or having reason to know that such other person is a full-time or part-time law-enforcement officer engaged in the execution of his public duties, such person is guilty of a Class 6 felony." },
@@ -316,7 +310,6 @@
             const lowText = naturalSpeechInput.toLowerCase().replace(/[\.\,\?\!]/g, "").trim();
             let responseHeadline = ""; let responseExplanation = "";
 
-            // DETECTOR PATTERNS MAPPED WITH AUTHORIZATION ATTRIBUTES FOR TRANSMISSION VERIFICATION
             if (lowText.includes("accident") || lowText.includes("scene") || lowText.includes("hit") || lowText.includes("894")) {
                 responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 46.2-894, Leaving the Scene of an Accident.";
                 responseExplanation = "The driver of any vehicle involved in an accident resulting in injury, death, or property damage must stop and report their identity. Failure to stop is a Class 5 Felony if a person was injured.";
@@ -331,110 +324,4 @@
                 responseExplanation = "The statute dictates that if any person remains upon the premises of another after being explicitly forbidden by an owner, agent, or posted notice, they are guilty of a Class 1 misdemeanor.";
             } else if (lowText.includes("assault") || lowText.includes("strike") || lowText.includes("hit") || lowText.includes("57")) {
                 responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 18.2-57, Assault and Battery on Law Enforcement.";
-                responseExplanation = "If any individual knowingly strikes an officer in the line of duty, the charge upgrades to a Class 6 Felony, carrying a mandatory minimum sentence of six months in confinement.";
-            } else if (lowText.includes("brandish") || lowText.includes("gun") || lowText.includes("weapon") || lowText.includes("282")) {
-                responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 18.2-282, Brandishing a Firearm.";
-                responseExplanation = "It is unlawful to point or brandish any firearm, or object resembling a firearm, in a manner that induces reasonable fear in another person. This is a Class 1 misdemeanor.";
-            } else {
-                responseHeadline = "Query processed under credential header token.";
-                responseExplanation = "Command phrase registered via transmission portal, but that specific legislative entry is not loaded into the local tracking cache structure yet. Tap the core target medallions directly to list active statutes.";
-            }
-
-            if (activeMicEngine) activeMicEngine.stop();
-            executeAdvancedDynamicVocalStream(responseHeadline, responseExplanation, true);
-        }
-
-        function forceClearAudioEnginePipeline() {
-            try {
-                window.speechSynthesis.cancel();
-                window.lexUtteranceQueue = [];
-            } catch(e) { console.log(e); }
-        }
-
-        function executeAdvancedDynamicVocalStream(headerText, descriptiveText, autoHideModal = false) {
-            forceClearAudioEnginePipeline();
-            const compiledParagraph = headerText + " . " + descriptiveText;
-            const conversationalUtterance = new SpeechSynthesisUtterance(compiledParagraph);
-            conversationalUtterance.rate = 0.95;
-            conversationalUtterance.volume = 1.0;
-            conversationalUtterance.pitch = 1.0;
-
-            const structuralSystemVoices = window.speechSynthesis.getVoices();
-            const verifiedMaleProfile = structuralSystemVoices.find(v => 
-                v.name.toLowerCase().includes('google us english male') || 
-                v.name.toLowerCase().includes('david') || 
-                v.lang.includes('en-US')
-            );
-            if (verifiedMaleProfile) {
-                conversationalUtterance.voice = verifiedMaleProfile;
-            }
-
-            conversationalUtterance.onend = () => { 
-                if (autoHideModal) {
-                    document.getElementById('voiceInterceptModal').style.display = 'none';
-                }
-            };
-
-            window.lexUtteranceQueue.push(conversationalUtterance);
-
-            setTimeout(() => {
-                window.speechSynthesis.speak(conversationalUtterance);
-            }, 50);
-        }
-
-        function emergencyKillVoiceSession() {
-            if (activeMicEngine) activeMicEngine.stop();
-            forceClearAudioEnginePipeline();
-            document.getElementById('voiceInterceptModal').style.display = 'none';
-        }
-
-        try {
-            window.speechSynthesis.getVoices();
-            if (window.speechSynthesis.onvoiceschanged !== undefined) {
-                window.speechSynthesis.onvoiceschanged = window.speechSynthesis.getVoices;
-            }
-        } catch(e) {}
-    </// CALIBRATED AUDIO STREAM PIPELINE FORCING MALE ENGINE LOGIC
-function executeAdvancedDynamicVocalStream(headerText, descriptiveText, autoHideModal = false) {
-    forceClearAudioEnginePipeline();
-    
-    const compiledParagraph = headerText + " . " + descriptiveText;
-    const conversationalUtterance = new SpeechSynthesisUtterance(compiledParagraph);
-    
-    conversationalUtterance.rate = 0.95; // Authoritative, tactical speed
-    conversationalUtterance.volume = 1.0;
-    conversationalUtterance.pitch = 0.95; // Slightly lower pitch for a deeper profile
-
-    // FORCE DETECTOR: Aggressively searches the hardware layer for male profiles
-    const structuralSystemVoices = window.speechSynthesis.getVoices();
-    
-    let selectedProfile = structuralSystemVoices.find(v => 
-        v.name.toLowerCase().includes('google us english male') || 
-        v.name.toLowerCase().includes('david') || 
-        v.name.toLowerCase().includes('microsoft male') ||
-        v.name.toLowerCase().includes('male')
-    );
-
-    // Safety fallback: If those specific variants aren't on your phone, find any standard US English profile
-    if (!selectedProfile) {
-        selectedProfile = structuralSystemVoices.find(v => v.lang.includes('en-US'));
-    }
-    
-    if (selectedProfile) {
-        conversationalUtterance.voice = selectedProfile;
-    }
-
-    conversationalUtterance.onend = () => { 
-        if (autoHideModal) {
-            document.getElementById('voiceInterceptModal').style.display = 'none';
-        }
-    };
-
-    window.lexUtteranceQueue.push(conversationalUtterance);
-
-    setTimeout(() => {
-        window.speechSynthesis.speak(conversationalUtterance);
-    }, 50);
-}script>
-</body>
-</html>
+                responseExplanation = "If any individual knowingly strikes an officer in the line of duty, the charge upgrades to a Class 6
