@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VICA - Virginia Instant Code Assistance</title>
     <style>
-        /* FULL SCREEN RESET */
+        /* FULL DEVICE INTERFACE RESET */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body, html { 
             width: 100%; 
@@ -18,7 +18,7 @@
             touch-action: none;
         }
 
-        /* MASTER BACKDROP CANVAS - USES IMAGE IF FOUND, FALLS BACK TO TACTICAL LEATHER BLUE IF NOT */
+        /* MASTER BACKDROP CANVAS - MAPS gggg.jpg, AUTODRAWS NATIVE BASE GRID IF MISSING */
         .app-workspace-canvas {
             position: relative;
             width: 100%;
@@ -35,7 +35,7 @@
             padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom)) 1rem;
         }
 
-        /* HEADER PANEL VISIBLE ONLY IF THE IMAGE FALLBACK TRIPS */
+        /* FALLBACK TEXT LINE IF IMAGE FAILS TO ENGAGE */
         .fallback-header {
             text-align: center;
             border-bottom: 2px solid #eab308;
@@ -46,7 +46,7 @@
         .fallback-header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; color: #fff; }
         .fallback-header p { font-size: 0.7rem; font-weight: 800; color: #eab308; text-transform: uppercase; margin-top: 0.15rem; }
 
-        /* INTERACTIVE COMMAND HOTSPOT LAYOUT DECK */
+        /* INTERACTIVE HOTSPOT LAYOUT DECK */
         .grid-hotspot-container {
             width: 100%;
             display: grid;
@@ -56,7 +56,7 @@
             margin-top: 1rem;
         }
 
-        /* HIGH-VISIBILITY EMBOSSED MEDALLIONS THAT DISPLAY REGARDLESS OF BACKGROUND IMAGE STATUS */
+        /* HIGH-VISIBILITY EMBOSSED TOUCH MEDALLIONS */
         .hotspot-tile {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border: 3px solid #eab308;
@@ -80,7 +80,7 @@
         .coin-title { font-size: 0.95rem; font-weight: 900; text-transform: uppercase; color: #eab308; }
         .coin-subtext { font-size: 0.55rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-top: 0.1rem; }
 
-        /* HIGH-CONTRAST CENTRAL VOICE PANEL HOTSPOT */
+        /* CENTRAL TALK-TO-LEX PANEL HOTSPOT */
         .voice-mic-hotspot {
             width: 100%;
             background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
@@ -93,15 +93,12 @@
             box-shadow: 0 6px 15px rgba(29,78,216,0.3), inset 0 0 15px rgba(56,189,248,0.1);
             margin-bottom: 1rem;
         }
-        .voice-mic-hotspot:active {
-            background: #1e3a8a;
-            border-color: #00ffca;
-        }
+        .voice-mic-hotspot:active { background: #1e3a8a; border-color: #00ffca; }
         .voice-title { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: #38bdf8; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .pulse-dot { width: 10px; height: 10px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 8px #38bdf8; animation: blink 0.8s infinite alternate; }
         .voice-subline { font-size: 0.7rem; font-weight: 700; color: #cbd5e1; margin-top: 0.25rem; text-transform: uppercase; }
 
-        /* SLIDE OVER WORKSPACE FOR CODES DISPLAY */
+        /* SLIDE OVER WORKSPACE PANEL FOR LAWS SELECTION */
         .slide-over-workspace {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -124,7 +121,7 @@
         .statute-head { font-size: 1rem; font-weight: 800; color: #fff; margin-top: 0.15rem; }
         .statute-body { font-size: 0.8rem; color: #cbd5e1; margin-top: 0.4rem; line-height: 1.4; }
 
-        /* VOCAL OVERLAY DIALOG INTERCEPTOR */
+        /* ADVANCED VOICE TRANSLATION MODAL INTERCEPTOR */
         .voice-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 3, 7, 0.98); z-index: 200;
@@ -136,7 +133,7 @@
         .voice-wave-rack { display: flex; align-items: center; gap: 4px; height: 32px; }
         .wave-bar { width: 4px; height: 8px; background: #38bdf8; border-radius: 3px; animation: bounce 0.4s infinite alternate; }
 
-        /* FOOTER CREDENTIAL BLOCK */
+        /* APP FOOTER LEGACY SIGN-OFF */
         .lex-footer { text-align: center; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); width: 100%; }
         .footer-tag { color: #3b82f6; font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         .footer-name { color: #fff; font-size: 1.25rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; margin: 0.1rem 0; }
@@ -150,11 +147,13 @@
 
     <div class="app-workspace-canvas">
         
+        <!-- HEADER PLATE -->
         <header class="fallback-header">
             <h1>VIRGINIA VICA</h1>
             <p>Law Enforcement Expert System</p>
         </header>
 
+        <!-- THE 4 EMBOSSED MEDALLION HOTSPOTS -->
         <main class="grid-hotspot-container">
             <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('criminal')">
                 <span class="coin-icon">⚖️</span>
@@ -178,6 +177,7 @@
             </div>
         </main>
 
+        <!-- TWO-WAY CONVERSATIONAL PIPELINE BUTTON HOTSPOT -->
         <div class="voice-mic-hotspot" onclick="engageAdvancedConversationalPipeline()">
             <div class="voice-title">
                 <span class="pulse-dot"></span>
@@ -186,6 +186,7 @@
             <div class="voice-subline">Tap once, describe scenario, and listen</div>
         </div>
 
+        <!-- FOOTER BLOCK -->
         <footer class="lex-footer">
             <div class="footer-tag">App Creator</div>
             <div class="footer-name">Earl A. Wood</div>
@@ -194,6 +195,7 @@
 
     </div>
 
+    <!-- FULL SCREEN SLIDE OVER DISPLAY SPACE -->
     <div id="slideOverWorkspace" class="slide-over-workspace">
         <div class="slide-header">
             <div id="slideCategoryTitle" class="slide-title">LIS REGISTRY SEARCH</div>
@@ -202,6 +204,7 @@
         <div id="slideScrollArea" class="slide-scroll-body"></div>
     </div>
 
+    <!-- AUDIO INTERCEPT WAVE FEEDBACK MODAL PANEL -->
     <div id="voiceInterceptModal" class="voice-modal-overlay">
         <div id="voiceStatusLabel" class="voice-status-msg">Advanced AI Channel Open</div>
         <div id="voiceTranscriptView" class="voice-transcript-window">"Describe the incident field conditions..."</div>
@@ -260,7 +263,6 @@
 
         function secureCloseSlideOver() { window.speechSynthesis.cancel(); document.getElementById('slideOverWorkspace').style.display = 'none'; }
 
-        // TWO-WAY CONVERSATIONAL PIPELINE HOOK
         function engageAdvancedConversationalPipeline() {
             window.speechSynthesis.cancel();
             const modal = document.getElementById('voiceInterceptModal');
@@ -331,6 +333,7 @@
             executeAdvancedDynamicVocalStream(responseHeadline, responseExplanation, true);
         }
 
+        // GLITCH REMOVED HERE: ALL STRING VARIABLES MATCH COGNITIVE ROUTER
         function executeAdvancedDynamicVocalStream(headerText, descriptiveText, autoHideModal = false) {
             window.speechSynthesis.cancel();
             const compiledParagraph = headerText + " " + descriptiveText;
@@ -348,3 +351,17 @@
             conversationalUtterance.onend = () => { if (autoHideModal) document.getElementById('voiceInterceptModal').style.display = 'none'; };
             window.speechSynthesis.speak(conversationalUtterance);
         }
+
+        function emergencyKillVoiceSession() {
+            if (activeMicEngine) activeMicEngine.stop();
+            window.speechSynthesis.cancel();
+            document.getElementById('voiceInterceptModal').style.display = 'none';
+        }
+
+        window.speechSynthesis.getVoices();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = window.speechSynthesis.getVoices;
+        }
+    </script>
+</body>
+</html>
