@@ -4,97 +4,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEX - Law Enforcement Expert</title>
+    <title>VICA - Virginia Instant Code Assistance</title>
     <style>
-        /* TACTICAL HIGH-CONTRAST MOBILE WORKSPACE */
+        /* FULL DEVICE COMPATIBILITY RESET */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body, html { 
             width: 100%; 
             height: 100%; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #060913; 
+            background-color: #060810; 
             color: #f1f5f9;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden;
+            position: fixed;
+            touch-action: none;
         }
 
-        /* NATIVE MILITARY-GRADE TEXTURED BASE PANEL */
-        .app-workspace-container {
+        /* MASTER BACKGROUND INTERFACE CANVASES THE gggg.jpg ARTWORK PERFECTLY */
+        .app-workspace-canvas {
+            position: relative;
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
+            height: 100%;
             margin: 0 auto;
-            padding: 1.25rem 1rem;
-            padding-top: calc(1.25rem + env(safe-area-inset-top));
-            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background: radial-gradient(circle at center, #111827 0%, #030712 100%);
-            min-height: 100%;
-            border: 3px double #eab308;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.9);
+            background: url('gggg.jpg') no-repeat center center;
+            background-size: contain;
+            box-shadow: 0 0 35px rgba(0,0,0,0.9);
         }
 
-        /* BRAND COMMAND HEADER */
-        .lex-header {
-            text-align: center;
-            border-bottom: 2px solid #eab308;
-            padding-bottom: 0.5rem;
-            margin-bottom: 0.25rem;
-        }
-        .lex-header h1 { font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .lex-header p { font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; color: #eab308; text-transform: uppercase; margin-top: 0.15rem; }
-
-        /* EMBOSSED GOLD MEDALLION GRID LAYOUT */
-        .medallion-grid {
+        /* HIDDEN GRID OF HOTSPOT TILES DESIGNED DIRECTLY OVER YOUR GOLD COINS */
+        .grid-hotspot-container {
+            position: absolute;
+            top: 29.5%;
+            left: 7%;
+            width: 48%;
+            height: 52%;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            width: 100%;
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr 1fr 1fr 1fr;
+            gap: 0.5rem;
+            z-index: 5;
         }
 
-        /* NATIVE COIN LAYOUTS */
-        .coin-medallion {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 3px solid #eab308;
-            border-radius: 50%;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+        /* DESIGNED AS INVISIBLE BUT RESPONSIVE CLICK OVERLAYS FOR THE FOUR MEDALLIONS */
+        .hotspot-tile {
+            background: rgba(255, 255, 255, 0);
+            border-radius: 8px;
             cursor: pointer;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 0 15px rgba(234,179,8,0.2);
-            transition: transform 0.1s ease;
-        }
-        .coin-medallion:active { transform: scale(0.96); background: #1e293b; }
-        .coin-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
-        .coin-title { font-size: 0.95rem; font-weight: 900; text-transform: uppercase; color: #eab308; letter-spacing: 0.5px; }
-        .coin-subtext { font-size: 0.55rem; color: #94a3b8; font-weight: 700; margin-top: 0.15rem; text-transform: uppercase; }
-
-        /* CENTRAL DYNAMIC CONVERSATIONAL AI ACTIVATOR PANEL */
-        .voice-actuator-panel {
             width: 100%;
-            background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
-            border: 2px solid #38bdf8;
-            border-radius: 12px;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(29,78,216,0.3), inset 0 0 15px rgba(56,189,248,0.1);
+            height: 100%;
+            transition: background 0.1s ease;
         }
-        .voice-actuator-panel:active { background: #1e3a8a; }
-        .voice-title { font-size: 1.3rem; font-weight: 900; text-transform: uppercase; color: #38bdf8; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
-        .voice-subtext-line { font-size: 0.75rem; font-weight: 700; color: #cbd5e1; margin-top: 0.35rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .pulse-dot { width: 10px; height: 10px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 10px #38bdf8; animation: blink 0.8s infinite alternate; }
+        .hotspot-tile:active {
+            background: rgba(234, 179, 8, 0.15);
+            border: 2px dashed #eab308;
+        }
 
-        /* SLIDE OVER WORKSPACE FOR LIS LAWS RETRIEVAL */
+        /* ACCURATE FLANK COORD FOR THE LARGE GOLD VOICE ACTIVATED MICROPHONE INTERCEPTOR */
+        .voice-mic-hotspot {
+            position: absolute;
+            top: 35%;
+            right: 8%;
+            width: 36%;
+            height: 48%;
+            background: rgba(255,255,255,0);
+            border-radius: 16px;
+            cursor: pointer;
+            z-index: 6;
+            transition: background 0.1s ease;
+        }
+        .voice-mic-hotspot:active {
+            background: rgba(56, 189, 248, 0.15);
+            border: 2px dashed #38bdf8;
+        }
+
+        /* SLIDE OVER SHEET WORKSPACE LAYOUT FOR DYNAMIC LIS CODE BROWSING */
         .slide-over-workspace {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #04060d;
+            background: #040712;
             z-index: 100;
             display: none;
             flex-direction: column;
@@ -103,276 +90,11 @@
             padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
         }
         .slide-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #eab308; padding-bottom: 0.75rem; margin-bottom: 1rem; }
-        .slide-title { font-size: 1.15rem; font-weight: 900; text-transform: uppercase; color: #eab308; }
+        .slide-title { font-size: 1.15rem; font-weight: 900; text-transform: uppercase; color: #eab308; letter-spacing: 0.5px; }
         .btn-close-slide { background: #7f1d1d; border: 1px solid #ef4444; color: #fff; padding: 0.4rem 1rem; font-weight: 800; font-size: 0.75rem; border-radius: 4px; text-transform: uppercase; cursor: pointer; }
         
         .slide-scroll-body { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; -webkit-overflow-scrolling: touch; }
         .statute-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 6px; padding: 1rem; border-left: 4px solid #eab308; cursor: pointer; }
         .statute-card:active { background: #1e293b; }
         .statute-num { font-family: monospace; font-size: 0.85rem; font-weight: 900; color: #38bdf8; }
-        .statute-head { font-size: 1rem; font-weight: 800; color: #fff; margin-top: 0.15rem; }
-        .statute-body { font-size: 0.8rem; color: #cbd5e1; margin-top: 0.4rem; line-height: 1.4; }
-
-        /* ADVANCED VOICE OVERLAY CONSOLE */
-        .voice-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 3, 6, 0.98); z-index: 200;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 2rem; gap: 1.5rem;
-        }
-        .voice-status-msg { font-size: 1.25rem; font-weight: 900; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; }
-        .voice-transcript-window { font-size: 1rem; color: #cbd5e1; background: #0f172a; padding: 1.25rem; border-radius: 8px; width: 100%; max-width: 380px; border: 1px solid #1e293b; text-align: center; line-height: 1.4; }
-        .voice-wave-rack { display: flex; align-items: center; gap: 4px; height: 32px; }
-        .wave-bar { width: 4px; height: 8px; background: #38bdf8; border-radius: 3px; animation: bounce 0.4s infinite alternate; }
-
-        /* FOOTER CREDENTIAL PLATES */
-        .lex-footer { text-align: center; margin-top: auto; padding-top: 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.05); }
-        .footer-tag { color: #3b82f6; font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-        .footer-name { color: #fff; font-size: 1.25rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; margin: 0.1rem 0; }
-        .footer-title { color: #94a3b8; font-size: 0.7rem; font-weight: 700; }
-
-        @keyframes blink { 0% { opacity: 0.3; } 100% { opacity: 1; } }
-        @keyframes bounce { 0% { height: 6px; } 100% { height: 28px; } }
-    </style>
-</head>
-<body>
-
-    <div class="app-workspace-container">
-        
-        <header class="lex-header">
-            <h1>LEX ADVANCED AI</h1>
-            <p>Law Enforcement Conversational Expert Engine</p>
-        </header>
-
-        <main class="medallion-grid">
-            <div class="coin-medallion" onclick="deployVirginiaStatuteWorkspace('criminal')">
-                <span class="coin-icon">⚖️</span>
-                <span class="coin-title">Criminal</span>
-                <span class="coin-subtext">Weapons · Assault</span>
-            </div>
-
-            <div class="coin-medallion" onclick="deployVirginiaStatuteWorkspace('traffic')">
-                <span class="coin-icon">🚓</span>
-                <span class="coin-title">Traffic</span>
-                <span class="coin-subtext">DUI · Reckless</span>
-            </div>
-
-            <div class="coin-medallion" onclick="deployVirginiaStatuteWorkspace('juvenile')">
-                <span class="coin-icon">🏠</span>
-                <span class="coin-title">Juvenile</span>
-                <span class="coin-subtext">Domestic Rel.</span>
-            </div>
-
-            <div class="coin-medallion" onclick="deployVirginiaStatuteWorkspace('game')">
-                <span class="coin-icon">🌲</span>
-                <span class="coin-title">Game & Fish</span>
-                <span class="coin-subtext">Hunting · Wildlife</span>
-            </div>
-        </main>
-
-        <div class="voice-actuator-panel" onclick="engageAdvancedConversationalPipeline()">
-            <div class="voice-title">
-                <span class="pulse-dot"></span>
-                <span>🎙️ ENGAGE CONVERSATIONAL AI</span>
-            </div>
-            <div class="voice-subtext-line">Tap once, describe the scenario naturally, and listen</div>
-        </div>
-
-        <footer class="lex-footer">
-            <div class="footer-tag">App Creator</div>
-            <div class="footer-name">Earl A. Wood</div>
-            <div class="footer-title">Deputy Sheriff Retired</div>
-        </footer>
-
-    </div>
-
-    <div id="slideOverWorkspace" class="slide-over-workspace">
-        <div class="slide-header">
-            <div id="slideCategoryTitle" class="slide-title">LIS REGISTRY SEARCH</div>
-            <button class="btn-close-slide" onclick="secureCloseSlideOver()">← Back</button>
-        </div>
-        <div id="slideScrollArea" class="slide-scroll-body"></div>
-    </div>
-
-    <div id="voiceInterceptModal" class="voice-modal-overlay">
-        <div id="voiceStatusLabel" class="voice-status-msg">Advanced AI Channel Open</div>
-        <div id="voiceTranscriptView" class="voice-transcript-window">"Describe the incident field conditions..."</div>
-        <div class="voice-wave-rack">
-            <div class="wave-bar" style="animation-delay: 0.1s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.3s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.0s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.5s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.2s;"></div>
-        </div>
-        <button class="btn-close-slide" onclick="emergencyKillVoiceSession()">Disconnect Channel</button>
-    </div>
-
-    <script>
-        // MASTER STATE LEGISLATIVE CACHE
-        const LIS_Statute_Registry = {
-            criminal: [
-                { code: "§ 18.2-282", title: "Brandishing a Firearm", text: "It shall be unlawful for any person to point, hold or brandish any firearm or any object similar in appearance, whether capable of being fired or not, in such manner as to reasonably induce fear in the mind of another. Class 1 Misdemeanor." },
-                { code: "§ 18.2-57", title: "Assault and Battery on Law Enforcement", text: "If any person commits an assault or an assault and battery against another knowing or having reason to know that such other person is a full-time or part-time law-enforcement officer engaged in the execution of his public duties, such person is guilty of a Class 6 felony." },
-                { code: "§ 18.2-58", title: "Robbery Statute", text: "An individual who commits robbery by causing serious bodily injury or utilizing a deadly weapon during a theft is guilty of a felony punishable by confinement in a state facility up to life." }
-            ],
-            traffic: [
-                { code: "§ 46.2-852", title: "Reckless Driving (General Endangerment)", text: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving. Class 1 Misdemeanor." },
-                { code: "§ 18.2-266", title: "Driving Under the Influence (DUI)", text: "It shall be unlawful for any person to drive or operate any motor vehicle, engine or train while such person has a blood alcohol concentration of zero point zero eight percent or more by weight." }
-            ],
-            juvenile: [
-                { code: "§ 16.1-253.4", title: "Emergency Protective Orders", text: "Any judge or magistrate may issue an emergency protective order if a law-enforcement officer states under oath that there is a probable danger of further domestic violence or abuse within the immediate household." }
-            ],
-            game: [
-                { code: "§ 29.1-738", title: "Operating Vessel Under Influence (BUI)", text: "No person shall operate any motorboat or vessel, or manipulate any water skis, surfboard, or similar device while under the influence of alcohol or drugs rendering him incapable of operating safely." },
-                { code: "§ 18.2-119", title: "Trespass After Having Been Forbidden", text: "If any person without authority of law goes upon or remains upon the lands, buildings or premises of another, after having been forbidden to do so, he shall be guilty of a Class 1 misdemeanor." }
-            ]
-        };
-
-        let activeMicEngine = null;
-
-        function deployVirginiaStatuteWorkspace(category) {
-            window.speechSynthesis.cancel();
-            const slideView = document.getElementById('slideOverWorkspace');
-            const titleLabel = document.getElementById('slideCategoryTitle');
-            const scrollArea = document.getElementById('slideScrollArea');
-
-            titleLabel.innerText = `${category.toUpperCase()} CODES (LIS DIRECT)`;
-            const laws = LIS_Statute_Registry[category] || [];
-
-            scrollArea.innerHTML = laws.map(item => `
-                <div class="statute-card" onclick="executeAdvancedDynamicVocalStream('${item.title}', '${item.text}')">
-                    <div class="statute-num">${item.code}</div>
-                    <div class="statute-head">${item.title}</div>
-                    <div class="statute-body">${item.text}</div>
-                </div>
-            `).join('');
-
-            slideView.style.display = 'flex';
-        }
-
-        function secureCloseSlideOver() { window.speechSynthesis.cancel(); document.getElementById('slideOverWorkspace').style.display = 'none'; }
-
-        // ADVANCED CONVERSATIONAL PIPELINE ENGINE INTERCONNECT
-        function engageAdvancedConversationalPipeline() {
-            window.speechSynthesis.cancel();
-            const modal = document.getElementById('voiceInterceptModal');
-            const statusLabel = document.getElementById('voiceStatusLabel');
-            const transcriptView = document.getElementById('voiceTranscriptView');
-
-            modal.style.display = 'flex';
-            statusLabel.innerText = "🎙️ Conversational Channel Active";
-            transcriptView.innerText = '"Describe the situation naturally..."';
-
-            const AdvancedVoiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (AdvancedVoiceRecognition) {
-                activeMicEngine = new AdvancedVoiceRecognition();
-                activeMicEngine.lang = 'en-US';
-                activeMicEngine.interimResults = false;
-                activeMicEngine.maxAlternatives = 1;
-
-                activeMicEngine.start();
-
-                activeMicEngine.onresult = (event) => {
-                    const officerConversationalText = event.results[0][0].transcript;
-                    transcriptView.innerText = `"${officerConversationalText}"`;
-                    statusLabel.innerText = "🧠 Analyzing Scenario Meaning...";
-                    
-                    setTimeout(() => {
-                        processAdvancedBrainInterpretation(officerConversationalText);
-                    }, 800);
-                };
-
-                activeMicEngine.onerror = () => { triggerConversationalFallback(); };
-            } else {
-                triggerConversationalFallback();
-            }
-        }
-
-        function triggerConversationalFallback() {
-            const statusLabel = document.getElementById('voiceStatusLabel');
-            const transcriptView = document.getElementById('voiceTranscriptView');
-            setTimeout(() => {
-                transcriptView.innerText = '"LEX, I have an armed theft suspect pinned down at the county line market."';
-                statusLabel.innerText = "🧠 Scenario Meaning Isolated: § 18.2-58 Triggered";
-                setTimeout(() => { processAdvancedBrainInterpretation("robbery"); }, 1200);
-            }, 1500);
-        }
-
-        // COGNITIVE NLP ROUTER INTERFACE
-        function processAdvancedBrainInterpretation(naturalSpeechInput) {
-            const lowText = naturalSpeechInput.toLowerCase();
-            let responseHeadline = "";
-            let responseExplanation = "";
-
-            if (lowText.includes("robbery") || lowText.includes("armed") || lowText.includes("theft") || lowText.includes("58")) {
-                responseHeadline = "Based on your incident details, you are looking at Virginia Code Section 18.2-58, Robbery.";
-                responseExplanation = "The LIS register states that any individual who commits a theft and causes serious physical injury or uses a firearm or deadly weapon is guilty of a major felony. Confinement parameters escalate up to life imprisonment. Decommit the scene safely.";
-            } else if (lowText.includes("trespass") || lowText.includes("leave") || lowText.includes("property") || lowText.includes("119")) {
-                responseHeadline = "Based on your scenario, this falls under Virginia Code Section 18.2-119, Trespass After Having Been Forbidden.";
-                responseExplanation = "The statute dictates that if any person goes upon or remains upon the lands or premises of another after being explicitly forbidden by an owner, agent, or posted notice, they are guilty of a Class 1 misdemeanor.";
-            } else if (lowText.includes("assault") || lowText.includes("strike") || lowText.includes("hit") || lowText.includes("57")) {
-                responseHeadline = "Scenario matches Virginia Code Section 18.2-57, Assault and Battery on Law Enforcement.";
-                responseExplanation = "If any individual knowingly strikes or assaults a full-time or part-time officer in the line of duty, the charge immediately upgrades to a Class 6 Felony, carrying a mandatory minimum sentence of six months in confinement.";
-            } else if (lowText.includes("brandish") || lowText.includes("gun") || lowText.includes("weapon") || lowText.includes("282")) {
-                responseHeadline = "Scenario matches Virginia Code Section 18.2-282, Brandishing a Firearm.";
-                responseExplanation = "It is unlawful to point, hold, or brandish any firearm or object resembling a firearm in a manner that induces reasonable fear in another person. This is classified as a Class 1 misdemeanor.";
-            } else if (lowText.includes("reckless") || lowText.includes("speed") || lowText.includes("chase") || lowText.includes("852")) {
-                responseHeadline = "Scenario loops to Virginia Code Section 46.2-852, Reckless Driving.";
-                responseExplanation = "Operating a vehicle on any highway in a manner or speed that actively endangers the life, limb, or property of another individual constitutes a Class 1 misdemeanor.";
-            } else {
-                responseHeadline = "Scenario context logged into the conversational pipeline.";
-                responseExplanation = "I hear what you are describing, Deputy, but that specific scenario structure requires a direct connection to the live Richmond LIS server data stream. Please select one of the core medallion coins to read the base caches.";
-            }
-
-            if (activeMicEngine) activeMicEngine.stop();
-            
-            // Route the data payload into our upgraded vocal stream
-            executeAdvancedDynamicVocalStream(responseHeadline, responseExplanation, true);
-        }
-
-        // UPGRADED CONTINUOUS VOCAL ENGINE FOR SMOOTH STREAMING AUDIO
-        function executeAdvancedDynamicVocalStream(headerText, descriptiveText, autoHideModal = false) {
-            window.speechSynthesis.cancel(); // Completely scrub active browser threads
-            
-            const compiledParagraph = headerText + " " + descriptiveText;
-            const conversationalUtterance = new SpeechSynthesisUtterance(compiledParagraph);
-            
-            conversationalUtterance.rate = 0.95; // Authoritative, tactical communication speed
-            conversationalUtterance.pitch = 1.0; // Level, clear tone registry
-
-            // EXTRACT A PREMIUM HIGH-QUALITY MALE CONVERSATIONAL VOICE PROFILE FROM HARDWARE LAYER
-            const structuralSystemVoices = window.speechSynthesis.getVoices();
-            const verifiedMaleProfile = structuralSystemVoices.find(v => 
-                v.name.toLowerCase().includes('google us english male') || 
-                v.name.toLowerCase().includes('david') || 
-                v.name.toLowerCase().includes('microsoft male') || 
-                v.lang.includes('en-US')
-            );
-            
-            if (verifiedMaleProfile) {
-                conversationalUtterance.voice = verifiedMaleProfile;
-            }
-
-            conversationalUtterance.onend = () => {
-                if (autoHideModal) {
-                    document.getElementById('voiceInterceptModal').style.display = 'none';
-                }
-            };
-
-            window.speechSynthesis.speak(conversationalUtterance);
-        }
-
-        function emergencyKillVoiceSession() {
-            if (activeMicEngine) activeMicEngine.stop();
-            window.speechSynthesis.cancel();
-            document.getElementById('voiceInterceptModal').style.display = 'none';
-        }
-
-        // Force browser cache to pre-load voice architecture tables
-        window.speechSynthesis.getVoices();
-        if (window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = window.speechSynthesis.getVoices;
-        }
-    </script>
-</body>
-</html>
+        .statute-head { font-size: 1rem;
