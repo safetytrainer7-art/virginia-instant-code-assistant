@@ -11,64 +11,89 @@
             width: 100%; 
             height: 100%; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #0c111d; /* Matches the deep leather backing trim */
+            background-color: #0c111d; /* Solid backing matching leather edge */
             color: #f8fafc; 
             overflow: hidden;
             position: fixed;
             touch-action: none;
         }
 
-        /* MASTER FLEXBOX LAYOUT CONTAINER */
-        .lex-container {
+        /* MASTER ENGINE STACKING CONTENT VERTICALLY WITHOUT OVERLAP */
+        .lex-master-frame {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             background-color: #0c111d;
-            z-index: 10;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* ASPECT-RATIO PROPORTIONAL GRAPHIC ANCHOR ENGINE */
+        /* PERFECT SQUARE GRAPHIC WRAPPER CONTAINER */
         .lex-backdrop-wrapper {
             position: relative;
             width: 100%;
-            height: 100%;
-            max-width: 100vh; /* Prevents stretching past perfect square proportions on wide displays */
-            max-height: 100vw;
-            aspect-ratio: 1 / 1; /* Forces the canvas to remain a perfect, undistorted square */
+            flex-grow: 1;
+            max-width: 100vh;
+            max-height: 70vh; /* Limits image height to leave plenty of room below */
+            aspect-ratio: 1 / 1;
             background-size: contain;
             background-position: center center;
             background-repeat: no-repeat;
             z-index: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
         }
 
-        /* TRANSPARENT HIT ENGINE COVER */
+        /* GRID SYSTEM MAPPING TRANSPARENT BUTTONS DIRECTLY OVER MEDALLIONS */
+        .medallion-touch-grid {
+            position: absolute;
+            top: 31%; /* Lines up vertically with your medallion rows */
+            left: 10%;
+            width: 53%; /* Constrains width to cover the left and right rows */
+            height: 52%;
+            z-index: 5;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* INVISIBLE HIGH-PERFORMANCE TOUCH TARGET FOR INDIVIDUAL MEDALLION BUTTONS */
+        .medallion-btn {
+            background: rgba(255, 255, 255, 0);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            touch-action: manipulation;
+            transition: background 0.15s ease;
+        }
+        /* Visual flash confirmation when a deputy taps a medallion button */
+        .medallion-btn:active {
+            background: rgba(234, 179, 8, 0.25);
+            border: 2px solid rgba(234, 179, 8, 0.6);
+        }
+
+        /* CONTROL CONSOLE - SITUATED COMPLETELY BELOW THE IMAGE BOUNDS */
         .lex-interaction-overlay {
             width: 100%;
-            padding-bottom: 2rem;
-            z-index: 5;
+            padding: 0.75rem 0;
+            z-index: 10;
+            background-color: #0c111d;
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex-shrink: 0;
         }
 
-        /* TACTICAL UTILITY FOOTER CONTROL PANEL */
         .lex-footer-menu {
-            width: 85%;
-            max-width: 340px;
+            width: 90%;
+            max-width: 360px;
             background: rgba(15, 23, 42, 0.96);
-            border: 2px solid rgba(234, 179, 8, 0.6);
+            border: 2px solid #eab308;
             border-radius: 8px;
-            padding: 0.75rem;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 20px 35px rgba(0,0,0,0.9);
+            padding: 0.65rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.9);
             display: flex;
             flex-direction: column;
             gap: 0.45rem;
@@ -82,7 +107,7 @@
             letter-spacing: 1px;
             color: #22c55e;
             background: #000000;
-            padding: 0.35rem;
+            padding: 0.4rem;
             border-radius: 4px;
             border: 1px solid rgba(255,255,255,0.1);
             font-weight: bold;
@@ -90,12 +115,12 @@
 
         .lex-btn {
             width: 100%;
-            padding: 0.65rem;
+            padding: 0.7rem;
             background: linear-gradient(180deg, #1e293b, #0f172a);
             border: 1px solid rgba(234, 179, 8, 0.5);
             color: #eab308;
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             border-radius: 4px;
@@ -109,7 +134,7 @@
             border-color: #ffffff;
         }
 
-        /* SYSTEM DIALOG POPUP WINDOW MATRIX */
+        /* POPUP WINDOW CONFIGS */
         .lex-popup-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -156,17 +181,24 @@
 </head>
 <body>
 
-    <div class="lex-container">
+    <div class="lex-master-frame">
         <div id="lexBackdrop" class="lex-backdrop-wrapper">
             
-            <div class="lex-interaction-overlay">
-                <div class="lex-footer-menu">
-                    <div id="lexStatus" class="lex-status-readout">🎙️ Voice System Standby</div>
-                    <button class="lex-btn" onclick="activateVoiceSearchEngine()">Tap to Speak Command</button>
-                    <button class="lex-btn" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);" onclick="openManualIndexPopup()">Manual Index Database</button>
-                </div>
+            <div class="medallion-touch-grid">
+                <button class="medallion-btn" onclick="targetCategoryVoiceEngine('criminal')" title="Criminal Division"></button>
+                <button class="medallion-btn" onclick="targetCategoryVoiceEngine('traffic')" title="Traffic Division"></button>
+                <button class="medallion-btn" onclick="targetCategoryVoiceEngine('juvenile')" title="Juvenile Division"></button>
+                <button class="medallion-btn" onclick="targetCategoryVoiceEngine('game')" title="Game & Fish Division"></button>
             </div>
 
+        </div>
+
+        <div class="lex-interaction-overlay">
+            <div class="lex-footer-menu">
+                <div id="lexStatus" class="lex-status-readout">🎙️ Voice System Standby</div>
+                <button class="lex-btn" onclick="activateVoiceSearchEngine('all')">Tap to Speak (All Divisions)</button>
+                <button class="lex-btn" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);" onclick="openManualIndexPopup()">Manual Index Database</button>
+            </div>
         </div>
     </div>
 
@@ -179,7 +211,7 @@
     </div>
 
     <script>
-        // Synchronized secure asset image cache lock verification
+        // Cache-protected image loader loop matching local asset parameters
         window.addEventListener('load', () => {
             const backdrop = document.getElementById('lexBackdrop');
             const cacheBuster = "?v=" + new Date().getTime();
@@ -194,31 +226,47 @@
             img.src = 'gggg.png';
         });
 
+        // Expanded system database organized by division matching your layout medals
         const vaStatuteDatabase = {
             "grand larceny": {
-                code: "§ 18.2-95",
-                class: "Felony",
-                details: "Grand larceny consists of simple larceny not from the person of another of goods/chattels of value of $1,000 or more, or simple larceny from the person of another of money or thing of value of $5 or more."
+                code: "§ 18.2-95", class: "Felony", category: "criminal",
+                details: "Consists of simple larceny not from the person of another of goods/chattels of value of $1,000 or more, or simple larceny from the person of another of money/thing of value of $5 or more."
             },
             "trespassing": {
-                code: "§ 18.2-119",
-                class: "Class 1 Misdemeanor",
-                details: "If any person without authority of law goes upon or remains upon the lands, buildings or premises of another, after having been forbidden to do so, either orally or in writing, by the owner or lessee."
+                code: "§ 18.2-119", class: "Class 1 Misdemeanor", category: "criminal",
+                details: "Going upon or remaining upon the lands, buildings or premises of another, after having been forbidden to do so, either orally or in writing, by the owner or lessee."
             },
             "reckless driving": {
-                code: "§ 46.2-852",
-                class: "Class 1 Misdemeanor",
-                details: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving."
+                code: "§ 46.2-852", class: "Class 1 Misdemeanor", category: "traffic",
+                details: "Driving a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person, regardless of the maximum speed permitted."
+            },
+            "dui": {
+                code: "§ 18.2-266", class: "Class 1 Misdemeanor", category: "traffic",
+                details: "Unlawful for any person to drive or operate any motor vehicle while such person has a blood alcohol concentration of 0.08 percent or more, or under the influence of any self-administered intoxicant."
             }
         };
 
-        function activateVoiceSearchEngine() {
+        // Medallion custom click target routing mechanism
+        function targetCategoryVoiceEngine(categoryType) {
+            const statusBox = document.getElementById('lexStatus');
+            statusBox.innerText = `Target Locked: ${categoryType.toUpperCase()}`;
+            statusBox.style.color = "#eab308";
+            
+            // Speaks tracking confirmation tone to operator hands-free
+            speakVerbalResponse(`LEX system division filter locked to ${categoryType}. State keyword.`);
+            
+            setTimeout(() => {
+                activateVoiceSearchEngine(categoryType);
+            }, 1800);
+        }
+
+        function activateVoiceSearchEngine(activeFilter = 'all') {
             window.speechSynthesis.cancel();
             const statusBox = document.getElementById('lexStatus');
             
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                statusBox.innerText = "❌ Browser Speech Not Supported";
+                statusBox.innerText = "❌ Speech Systems Blocked";
                 statusBox.style.color = "#ef4444";
                 return;
             }
@@ -229,8 +277,8 @@
             recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
-                statusBox.innerText = "Listening for Code Keyword...";
-                statusBox.style.color = "#eab308";
+                statusBox.innerText = activeFilter === 'all' ? "Listening (All Divisions)..." : `Listening (${activeFilter.toUpperCase()})...`;
+                statusBox.style.color = "#38bdf8";
             };
 
             recognition.onerror = () => {
@@ -241,11 +289,18 @@
             recognition.onresult = (event) => {
                 const spokenText = event.results[0][0].transcript.toLowerCase();
                 statusBox.innerText = `Heard: "${spokenText}"`;
-                statusBox.style.color = "#38bdf8";
+                statusBox.style.color = "#eab308";
                 
                 let matchFound = false;
                 for (let keyword in vaStatuteDatabase) {
                     if (spokenText.includes(keyword)) {
+                        const targetData = vaStatuteDatabase[keyword];
+                        
+                        // Validates category lock matches before printing
+                        if (activeFilter !== 'all' && targetData.category !== activeFilter) {
+                            continue; 
+                        }
+                        
                         executeStatuteMatchDisplay(keyword);
                         matchFound = true;
                         break;
@@ -256,7 +311,7 @@
                     setTimeout(() => {
                         statusBox.innerText = "🎙️ Voice System Standby";
                         statusBox.style.color = "#22c55e";
-                        speakVerbalResponse("No direct statute match located.");
+                        speakVerbalResponse("No matching code entry resolved in this sequence.");
                     }, 1200);
                 }
             };
@@ -288,7 +343,7 @@
             document.getElementById('lexPopupTitle').innerText = "Virginia Statutory Index";
             let listHtml = "<ul style='list-style:none;'>";
             for (let keyword in vaStatuteDatabase) {
-                listHtml += `<li style='padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); color:#38bdf8; cursor:pointer;' onclick='closeLexPopupDisplay(); executeStatuteMatchDisplay("${keyword}");'><b>${vaStatuteDatabase[keyword].code}</b> - ${keyword.toUpperCase()}</li>`;
+                listHtml += `<li style='padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); color:#38bdf8; cursor:pointer;' onclick='closeLexPopupDisplay(); executeStatuteMatchDisplay("${keyword}");'><b>${vaStatuteDatabase[keyword].code}</b> - ${keyword.toUpperCase()} [${vaStatuteDatabase[keyword].category.toUpperCase()}]</li>`;
             }
             listHtml += "</ul>";
             document.getElementById('lexPopupContent').innerHTML = listHtml;
