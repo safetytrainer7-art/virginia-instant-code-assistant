@@ -3,325 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>VICA - Virginia Instant Code Assistance</title>
+    <title>LEX - Virginia Instant Code Assistant</title>
     <style>
-        /* FULL SCREEN RESET */
+        /* SAFE AREA BOUNDARIES FOR SMARTPHONES */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
         body, html { 
             width: 100%; 
             height: 100%; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #060811; 
-            color: #f1f5f9;
+            background-color: #0d1527; 
+            color: #f8fafc; 
             overflow: hidden;
             position: fixed;
             touch-action: none;
         }
 
-        /* MASTER BACKDROP CANVAS - MAPS gggg.jpg, AUTODRAWS NATIVE BASE GRID IF MISSING */
-        .app-workspace-canvas {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 100%;
-            margin: 0 auto;
-            background: radial-gradient(circle at center, #111827 0%, #040712 100%), url('gggg.jpg') no-repeat center center;
-            background-size: contain;
-            box-shadow: 0 0 35px rgba(0,0,0,0.9);
-            border: 4px double #eab308;
+        /* MASTER ISOLATED CANVAS CONTAINMENT */
+        .lex-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom)) 1rem;
-        }
-
-        /* FALLBACK TEXT LINE IF THE FILE ENCOUNTERS PORTAL DELAYS */
-        .fallback-header {
-            text-align: center;
-            border-bottom: 2px solid #eab308;
-            padding-bottom: 0.5rem;
-            width: 100%;
+            background-color: #020208;
             z-index: 10;
         }
-        .fallback-header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; color: #fff; }
-        .fallback-header p { font-size: 0.7rem; font-weight: 800; color: #eab308; text-transform: uppercase; margin-top: 0.15rem; }
 
-        /* INTERACTIVE HOTSPOT LAYOUT DECK */
-        .grid-hotspot-container {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            z-index: 5;
-            margin-top: 1rem;
+        /* BACKGROUND IMMERSION LOCK PANEL */
+        .lex-backdrop {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('gggg.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
         }
 
-        /* HIGH-VISIBILITY EMBOSSED TOUCH MEDALLIONS */
-        .hotspot-tile {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 3px solid #eab308;
-            border-radius: 50%;
-            aspect-ratio: 1 / 1;
+        /* TRANSPARENT COVER HIT ENGINE OVER IMAGE MEDALLIONS */
+        .lex-interaction-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
+            padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+        }
+
+        /* TACTICAL UTILITY FOOTER CONTROL PANEL */
+        .lex-footer-menu {
+            width: 90%;
+            max-width: 380px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid rgba(234, 179, 8, 0.4);
+            border-radius: 8px;
             padding: 1rem;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 0 15px rgba(234,179,8,0.3);
-            transition: transform 0.1s ease;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
         }
-        .hotspot-tile:active {
-            transform: scale(0.96);
-            background: rgba(234, 179, 8, 0.2);
-        }
-        .coin-icon { font-size: 1.8rem; margin-bottom: 0.2rem; }
-        .coin-title { font-size: 0.95rem; font-weight: 900; text-transform: uppercase; color: #eab308; }
-        .coin-subtext { font-size: 0.55rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-top: 0.1rem; }
 
-        /* CENTRAL TALK-TO-LEX PANEL HOTSPOT */
-        .voice-mic-hotspot {
+        .lex-status-readout {
+            font-family: monospace;
+            font-size: 0.75rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #22c55e;
+            background: #000000;
+            padding: 0.4rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-weight: bold;
+        }
+
+        .lex-btn {
             width: 100%;
-            background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
-            border: 2px solid #38bdf8;
-            border-radius: 12px;
-            padding: 1.25rem 1rem;
-            text-align: center;
+            padding: 0.75rem;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            border: 1px solid rgba(234, 179, 8, 0.5);
+            color: #eab308;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
             cursor: pointer;
-            z-index: 6;
-            box-shadow: 0 6px 15px rgba(29,78,216,0.3), inset 0 0 15px rgba(56,189,248,0.1);
-            margin-bottom: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .voice-mic-hotspot:active { background: #1e3a8a; border-color: #00ffca; }
-        .voice-title { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: #38bdf8; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-        .pulse-dot { width: 10px; height: 10px; background: #38bdf8; border-radius: 50%; box-shadow: 0 0 8px #38bdf8; animation: blink 0.8s infinite alternate; }
-        .voice-subline { font-size: 0.7rem; font-weight: 700; color: #cbd5e1; margin-top: 0.25rem; text-transform: uppercase; }
+        .lex-btn:active {
+            background: #eab308;
+            color: #000000;
+            border-color: #ffffff;
+        }
 
-        /* SLIDE OVER WORKSPACE PANEL FOR LAWS SELECTION */
-        .slide-over-workspace {
-            position: fixed;
+        /* SYSTEM DIALOG POPUP WINDOW MATRIX */
+        .lex-popup-overlay {
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #040712;
+            background: rgba(2, 2, 8, 0.95);
             z-index: 100;
             display: none;
             flex-direction: column;
-            padding: 1.25rem;
-            padding-top: calc(1.25rem + env(safe-area-inset-top));
-            padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
         }
-        .slide-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #eab308; padding-bottom: 0.75rem; margin-bottom: 1rem; }
-        .slide-title { font-size: 1.15rem; font-weight: 900; text-transform: uppercase; color: #eab308; }
-        .btn-close-slide { background: #7f1d1d; border: 1px solid #ef4444; color: #fff; padding: 0.4rem 1rem; font-weight: 800; font-size: 0.75rem; border-radius: 4px; text-transform: uppercase; cursor: pointer; }
-        
-        .slide-scroll-body { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; -webkit-overflow-scrolling: touch; }
-        .statute-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 6px; padding: 1rem; border-left: 4px solid #eab308; cursor: pointer; }
-        .statute-card:active { background: #1e293b; }
-        .statute-num { font-family: monospace; font-size: 0.85rem; font-weight: 900; color: #38bdf8; }
-        .statute-head { font-size: 1rem; font-weight: 800; color: #fff; margin-top: 0.15rem; }
-        .statute-body { font-size: 0.8rem; color: #cbd5e1; margin-top: 0.4rem; line-height: 1.4; }
-
-        /* ADVANCED VOICE TRANSLATION MODAL INTERCEPTOR */
-        .voice-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 3, 7, 0.98); z-index: 200;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 2rem; gap: 1.5rem;
+        .lex-popup-card {
+            width: 100%;
+            max-width: 360px;
+            background: #0f172a;
+            border: 2px solid #eab308;
+            border-radius: 6px;
+            padding: 1.2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
-        .voice-status-msg { font-size: 1.25rem; font-weight: 900; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; }
-        .voice-transcript-window { font-size: 1rem; color: #cbd5e1; background: #0f172a; padding: 1.25rem; border-radius: 8px; width: 100%; max-width: 380px; border: 1px solid #1e293b; text-align: center; line-height: 1.4; }
-        .voice-wave-rack { display: flex; align-items: center; gap: 4px; height: 32px; }
-        .wave-bar { width: 4px; height: 8px; background: #38bdf8; border-radius: 3px; animation: bounce 0.4s infinite alternate; }
-
-        /* APP FOOTER LEGACY SIGN-OFF */
-        .lex-footer { text-align: center; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); width: 100%; }
-        .footer-tag { color: #3b82f6; font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-        .footer-name { color: #fff; font-size: 1.25rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; margin: 0.1rem 0; }
-        .footer-title { color: #94a3b8; font-size: 0.7rem; font-weight: 700; }
-
-        @keyframes blink { 0% { opacity: 0.3; } 100% { opacity: 1; } }
-        @keyframes bounce { 0% { height: 6px; } 100% { height: 28px; } }
+        .lex-popup-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #eab308;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(234, 179, 8, 0.3);
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+        .lex-popup-content {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-workspace-canvas">
-        
-        <header class="fallback-header">
-            <h1>VIRGINIA VICA</h1>
-            <p>Law Enforcement Expert System</p>
-        </header>
+    <!-- BRAND NEW SEPARATED LEX WORKSPACE ENGINE -->
+    <div class="lex-container">
+        <!-- CENTERPIECE IMAGE DISPLAY CORE HOOK -->
+        <div class="lex-backdrop"></div>
 
-        <main class="grid-hotspot-container">
-            <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('criminal')">
-                <span class="coin-icon">⚖️</span>
-                <span class="coin-title">Criminal</span>
-                <span class="coin-subtext">Weapons · Assault</span>
+        <!-- USER INTERACTION CONTROL INTERFACE CONTROLLER -->
+        <div class="lex-interaction-overlay">
+            <div class="lex-footer-menu">
+                <div id="lexStatus" class="lex-status-readout">🎙️ Voice System Standby</div>
+                <button class="lex-btn" onclick="activateVoiceSearchEngine()">Tap to Speak Command</button>
+                <button class="lex-btn" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);" onclick="openManualIndexPopup()">Manual Index Database</button>
             </div>
-            <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('traffic')">
-                <span class="coin-icon">🚓</span>
-                <span class="coin-title">Traffic</span>
-                <span class="coin-subtext">DUI · Reckless</span>
-            </div>
-            <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('juvenile')">
-                <span class="coin-icon">🏠</span>
-                <span class="coin-title">Juvenile</span>
-                <span class="coin-subtext">Domestic Rel.</span>
-            </div>
-            <div class="hotspot-tile" onclick="deployVirginiaStatuteWorkspace('game')">
-                <span class="coin-icon">🌲</span>
-                <span class="coin-title">Game & Fish</span>
-                <span class="coin-subtext">Hunting · Wildlife</span>
-            </div>
-        </main>
-
-        <div class="voice-mic-hotspot" onclick="engageAdvancedConversationalPipeline()">
-            <div class="voice-title">
-                <span class="pulse-dot"></span>
-                <span>🎙️ VOICE ACTIVATED AI</span>
-            </div>
-            <div class="voice-subline">Tap once, describe scenario, and listen</div>
         </div>
-
-        <footer class="lex-footer">
-            <div class="footer-tag">App Creator</div>
-            <div class="footer-name">Earl A. Wood</div>
-            <div class="footer-title">Deputy Sheriff Retired</div>
-        </footer>
-
     </div>
 
-    <div id="slideOverWorkspace" class="slide-over-workspace">
-        <div class="slide-header">
-            <div id="slideCategoryTitle" class="slide-title">LIS REGISTRY SEARCH</div>
-            <button class="btn-close-slide" onclick="secureCloseSlideOver()">← Back</button>
+    <!-- ISOLATED INTERACTIVE DATA DISPLAY LAYER -->
+    <div id="lexPopup" class="lex-popup-overlay">
+        <div class="lex-popup-card">
+            <div id="lexPopupTitle" class="lex-popup-title">Statute Lookup Result</div>
+            <div id="lexPopupContent" class="lex-popup-content"></div>
+            <button class="lex-btn" onclick="closeLexPopupDisplay()">Dismiss Record</button>
         </div>
-        <div id="slideScrollArea" class="slide-scroll-body"></div>
-    </div>
-
-    <div id="voiceInterceptModal" class="voice-modal-overlay">
-        <div id="voiceStatusLabel" class="voice-status-msg">Advanced AI Channel Open</div>
-        <div id="voiceTranscriptView" class="voice-transcript-window">"Describe the incident field conditions..."</div>
-        <div class="voice-wave-rack">
-            <div class="wave-bar" style="animation-delay: 0.1s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.3s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.0s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.5s;"></div>
-            <div class="wave-bar" style="animation-delay: 0.2s;"></div>
-        </div>
-        <button class="btn-close-slide" onclick="emergencyKillVoiceSession()">Disconnect Channel</button>
     </div>
 
     <script>
-        // LIVE INTEGRATED CREDENTIAL TOKEN FROM EMAIL PORTAL
-        const VA_LIS_SECURE_TOKEN = "DD52A887-4E99-42B5-B9FA-6E97F6010272";
-
-        // GLOBAL HARDWARE MEMORY CONTAINER FOR UNINTERRUPTED OUTPUT AUDIO
-        window.lexUtteranceQueue = [];
-
-        // MASTER STATE LEGISLATIVE CACHE
-        const LIS_Statute_Registry = {
-            criminal: [
-                { code: "§ 18.2-57", title: "Assault and Battery on Law Enforcement", text: "If any person commits an assault or an assault and battery against another knowing or having reason to know that such other person is a full-time or part-time law-enforcement officer engaged in the execution of his public duties, such person is guilty of a Class 6 felony." },
-                { code: "§ 18.2-282", title: "Brandishing a Firearm", text: "It shall be unlawful for any person to point, hold or brandish any firearm or any object similar in appearance, whether capable of being fired or not, in such manner as to reasonably induce fear in the mind of another. Class 1 Misdemeanor." },
-                { code: "§ 18.2-60", title: "Threats of Death or Bodily Injury", text: "Any person who writes, types, or speaks any threat to kill or do bodily injury to a person or any member of his family, causing reasonable apprehension of death or bodily injury, is guilty of a Class 6 felony." }
-            ],
-            traffic: [
-                { code: "§ 46.2-852", title: "Reckless Driving (General Endangerment)", text: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving. Class 1 Misdemeanor." },
-                { code: "§ 46.2-894", title: "Leaving the Scene of an Accident (Hit and Run)", text: "The driver of any vehicle involved in an accident in which a person is injured or killed, or which results in property damage, shall immediately stop as close to the scene of the accident as possible without obstructing traffic and report his identity to law enforcement. Failure to do so constitutes a Class 5 Felony if an injury occurred." },
-                { code: "§ 18.2-266", title: "Driving Under the Influence (DUI)", text: "It shall be unlawful for any person to drive or operate any motor vehicle, engine or train while such person has a blood alcohol concentration of zero point zero eight percent or more by weight." }
-            ],
-            juvenile: [
-                { code: "§ 16.1-253.4", title: "Emergency Protective Orders", text: "Any judge or magistrate may issue an emergency protective order if a law-enforcement officer states under oath that there is a probable danger of further domestic violence or abuse within the immediate household." }
-            ],
-            game: [
-                { code: "§ 29.1-738", title: "Operating Vessel Under Influence (BUI)", text: "No person shall operate any motorboat or vessel, or manipulate any water skis, surfboard, or similar device while under the influence of alcohol or drugs rendering him incapable of operating safely." },
-                { code: "§ 18.2-119", title: "Trespass After Having Been Forbidden", text: "If any person without authority of law goes upon or remains upon the lands, buildings or premises of another, after having been forbidden to do so, he shall be guilty of a Class 1 misdemeanor." }
-            ]
+        // Separate, standalone data mapping for Virginia Statutory Codes
+        const vaStatuteDatabase = {
+            "grand larceny": {
+                code: "§ 18.2-95",
+                class: "Felony",
+                details: "Grand larceny consists of simple larceny not from the person of another of goods/chattels of value of $1,000 or more, or simple larceny from the person of another of money or thing of value of $5 or more."
+            },
+            "trespassing": {
+                code: "§ 18.2-119",
+                class: "Class 1 Misdemeanor",
+                details: "If any person without authority of law goes upon or remains upon the lands, buildings or premises of another, after having been forbidden to do so, either orally or in writing, by the owner or lessee."
+            },
+            "reckless driving": {
+                code: "§ 46.2-852",
+                class: "Class 1 Misdemeanor",
+                details: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving."
+            }
         };
 
-        let activeMicEngine = null;
-
-        function deployVirginiaStatuteWorkspace(category) {
-            forceClearAudioEnginePipeline();
-            const slideView = document.getElementById('slideOverWorkspace');
-            const titleLabel = document.getElementById('slideCategoryTitle');
-            const scrollArea = document.getElementById('slideScrollArea');
-
-            titleLabel.innerText = `${category.toUpperCase()} CODES (LIS DIRECT)`;
-            const laws = LIS_Statute_Registry[category] || [];
-
-            scrollArea.innerHTML = laws.map(item => `
-                <div class="statute-card" onclick="executeAdvancedDynamicVocalStream('${item.title}', '${item.text}')">
-                    <div class="statute-num">${item.code}</div>
-                    <div class="statute-head">${item.title}</div>
-                    <div class="statute-body">${item.text}</div>
-                </div>
-            `).join('');
-
-            slideView.style.display = 'flex';
-        }
-
-        function secureCloseSlideOver() { forceClearAudioEnginePipeline(); document.getElementById('slideOverWorkspace').style.display = 'none'; }
-
-        function engageAdvancedConversationalPipeline() {
-            forceClearAudioEnginePipeline();
-            const modal = document.getElementById('voiceInterceptModal');
-            const statusLabel = document.getElementById('voiceStatusLabel');
-            const transcriptView = document.getElementById('voiceTranscriptView');
-
-            modal.style.display = 'flex';
-            statusLabel.innerText = "🎙️ Conversational Channel Active";
-            transcriptView.innerText = '"Describe the situation naturally..."';
-
-            const AdvancedVoiceRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (AdvancedVoiceRecognition) {
-                activeMicEngine = new AdvancedVoiceRecognition();
-                activeMicEngine.lang = 'en-US';
-                activeMicEngine.interimResults = false;
-                activeMicEngine.maxAlternatives = 1;
-
-                activeMicEngine.start();
-
-                activeMicEngine.onresult = (event) => {
-                    const officerConversationalText = event.results[0][0].transcript;
-                    transcriptView.innerText = `"${officerConversationalText}"`;
-                    statusLabel.innerText = "🧠 Analyzing Scenario Meaning...";
-                    setTimeout(() => { processAdvancedBrainInterpretation(officerConversationalText); }, 500);
-                };
-
-                activeMicEngine.onerror = () => { triggerConversationalFallback(); };
-            } else {
-                triggerConversationalFallback();
+        // Standalone voice recognition handler completely isolated from TACNET
+        function activateVoiceSearchEngine() {
+            window.speechSynthesis.cancel();
+            const statusBox = document.getElementById('lexStatus');
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                statusBox.innerText = "❌ Browser Speech Not Supported";
+                statusBox.style.color = "#ef4444";
+                return;
             }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                statusBox.innerText = "Listening for Code Keyword...";
+                statusBox.style.color = "#eab308";
+            };
+
+            recognition.onerror = () => {
+                statusBox.innerText = "🎙️ Voice System Standby";
+                statusBox.style.color = "#22c55e";
+            };
+
+            recognition.onresult = (event) => {
+                const spokenText = event.results[0][0].transcript.toLowerCase();
+                statusBox.innerText = `Heard: "${spokenText}"`;
+                statusBox.style.color = "#38bdf8";
+                
+                // Scan clean, dedicated dataset
+                let matchFound = false;
+                for (let keyword in vaStatuteDatabase) {
+                    if (spokenText.includes(keyword)) {
+                        executeStatuteMatchDisplay(keyword);
+                        matchFound = true;
+                        break;
+                    }
+                }
+
+                if (!matchFound) {
+                    setTimeout(() => {
+                        statusBox.innerText = "🎙️ Voice System Standby";
+                        statusBox.style.color = "#22c55e";
+                        speakVerbalResponse("No direct statute match located in the Virginia database registry.");
+                    }, 1200);
+                }
+            };
+
+            recognition.start();
         }
 
-        function triggerConversationalFallback() {
-            const statusLabel = document.getElementById('voiceStatusLabel');
-            const transcriptView = document.getElementById('voiceTranscriptView');
-            setTimeout(() => {
-                transcriptView.innerText = '"LEX, check leaving the scene of an accident"';
-                statusLabel.innerText = "🧠 Scenario Meaning Isolated: § 46.2-894 Triggered";
-                setTimeout(() => { processAdvancedBrainInterpretation("accident"); }, 800);
-            }, 1200);
+        function executeStatuteMatchDisplay(key) {
+            const data = vaStatuteDatabase[key];
+            document.getElementById('lexPopupTitle').innerText = `${data.code} - ${key.toUpperCase()}`;
+            document.getElementById('lexPopupContent').innerHTML = `
+                <p style="margin-bottom: 0.5rem;"><b>Classification:</b> <span style="color:#eab308;">${data.class}</span></p>
+                <p><b>Statutory Language:</b> ${data.details}</p>
+            `;
+            document.getElementById('lexPopup').style.display = 'flex';
+            
+            // Bilingual speech verification output loop
+            const verbalScript = `Virginia Code Section ${data.code}. Classified as a ${data.class}. Law details: ${data.details}`;
+            speakVerbalResponse(verbalScript);
         }
 
-        function processAdvancedBrainInterpretation(naturalSpeechInput) {
-            const lowText = naturalSpeechInput.toLowerCase().replace(/[\.\,\?\!]/g, "").trim();
-            let responseHeadline = ""; let responseExplanation = "";
+        function speakVerbalResponse(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.95;
+            window.speechSynthesis.speak(utterance);
+        }
 
-            if (lowText.includes("accident") || lowText.includes("scene") || lowText.includes("hit") || lowText.includes("894")) {
-                responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 46.2-894, Leaving the Scene of an Accident.";
-                responseExplanation = "The driver of any vehicle involved in an accident resulting in injury, death, or property damage must stop and report their identity. Failure to stop is a Class 5 Felony if a person was injured.";
-            } else if (lowText.includes("threat") || lowText.includes("kill") || lowText.includes("60")) {
-                responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 18.2-60, Threats of Death or Bodily Injury.";
-                responseExplanation = "Any person who communicates a threat to kill or do bodily injury to an individual or their family, creating reasonable apprehension, is guilty of a Class 6 felony.";
-            } else if (lowText.includes("robbery") || lowText.includes("armed") || lowText.includes("theft") || lowText.includes("58")) {
-                responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 18.2-58, Robbery.";
-                responseExplanation = "The LIS register states that any individual who commits a theft and causes serious physical injury or uses a deadly weapon is guilty of a major felony. Confinement parameters escalate up to life imprisonment.";
-            } else if (lowText.includes("trespass") || lowText.includes("leave") || lowText.includes("property") || lowText.includes("119")) {
-                responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 18.2-119, Trespass After Having Been Forbidden.";
-                responseExplanation = "The statute dictates that if any person remains upon the premises of another after being explicitly forbidden by an owner, agent, or posted notice, they are guilty of a Class 1 misdemeanor.";
-            } else if (lowText.includes("assault") || lowText.includes("strike") || lowText.includes("hit") || lowText.includes("57")) {
-                responseHeadline = "Verified via secure LIS token. Scenario matches Virginia Code Section 18.2-57, Assault and Battery on Law Enforcement.";
-                responseExplanation = "If any individual knowingly strikes an officer in the line of duty, the charge upgrades to a Class 6
+        function openManualIndexPopup() {
+            document.getElementById('lexPopupTitle').innerText = "Virginia Statutory Index";
+            let listHtml = "<ul style='list-style:none;'>";
+            for (let keyword in vaStatuteDatabase) {
+                listHtml += `<li style='padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); color:#38bdf8; cursor:pointer;' onclick='closeLexPopupDisplay(); executeStatuteMatchDisplay("${keyword}");'><b>${vaStatuteDatabase[keyword].code}</b> - ${keyword.toUpperCase()}</li>`;
+            }
+            listHtml += "</ul>";
+            document.getElementById('lexPopupContent').innerHTML = listHtml;
+            document.getElementById('lexPopup').style.display = 'flex';
+        }
+
+        function closeLexPopupDisplay() {
+            window.speechSynthesis.cancel();
+            document.getElementById('lexPopup').style.display = 'none';
+            document.getElementById('lexStatus').innerText = "🎙️ Voice System Standby";
+            document.getElementById('lexStatus').style.color = "#22c55e";
+        }
+    </script>
+</body>
+</html>
