@@ -11,7 +11,7 @@
             width: 100%; 
             height: 100%; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #0d1527; 
+            background-color: #020208; 
             color: #f8fafc; 
             overflow: hidden;
             position: fixed;
@@ -28,11 +28,10 @@
             z-index: 10;
         }
 
-        /* BACKGROUND IMMERSION LOCK PANEL */
+        /* BACKGROUND IMMERSION LOCK PANEL WITH MULTIPLE BACKUPS */
         .lex-backdrop {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('gggg.jpg');
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
@@ -55,8 +54,8 @@
             width: 90%;
             max-width: 380px;
             margin: 0 auto;
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid rgba(234, 179, 8, 0.4);
+            background: rgba(15, 23, 42, 0.92);
+            border: 2px solid rgba(234, 179, 8, 0.5);
             border-radius: 8px;
             padding: 1rem;
             backdrop-filter: blur(12px);
@@ -149,12 +148,9 @@
 </head>
 <body>
 
-    <!-- BRAND NEW SEPARATED LEX WORKSPACE ENGINE -->
     <div class="lex-container">
-        <!-- CENTERPIECE IMAGE DISPLAY CORE HOOK -->
-        <div class="lex-backdrop"></div>
+        <div id="lexBackdrop" class="lex-backdrop"></div>
 
-        <!-- USER INTERACTION CONTROL INTERFACE CONTROLLER -->
         <div class="lex-interaction-overlay">
             <div class="lex-footer-menu">
                 <div id="lexStatus" class="lex-status-readout">🎙️ Voice System Standby</div>
@@ -164,7 +160,6 @@
         </div>
     </div>
 
-    <!-- ISOLATED INTERACTIVE DATA DISPLAY LAYER -->
     <div id="lexPopup" class="lex-popup-overlay">
         <div class="lex-popup-card">
             <div id="lexPopupTitle" class="lex-popup-title">Statute Lookup Result</div>
@@ -174,7 +169,28 @@
     </div>
 
     <script>
-        // Separate, standalone data mapping for Virginia Statutory Codes
+        // Automatic image tester to lock down the background filename on bootup
+        window.addEventListener('load', () => {
+            const backdrop = document.getElementById('lexBackdrop');
+            const testImages = ['gggg.jpg', 'gggg.JPG', 'Screensho.jpg', 'Screensho.JPG'];
+            
+            function tryLoadImage(index) {
+                if (index >= testImages.length) {
+                    console.log("No matching background file resolved.");
+                    return;
+                }
+                const img = new Image();
+                img.onload = () => {
+                    backdrop.style.backgroundImage = `url('${testImages[index]}')`;
+                };
+                img.onerror = () => {
+                    tryLoadImage(index + 1); // Try the next backup filename
+                };
+                img.src = testImages[index];
+            }
+            tryLoadImage(0);
+        });
+
         const vaStatuteDatabase = {
             "grand larceny": {
                 code: "§ 18.2-95",
@@ -193,7 +209,6 @@
             }
         };
 
-        // Standalone voice recognition handler completely isolated from TACNET
         function activateVoiceSearchEngine() {
             window.speechSynthesis.cancel();
             const statusBox = document.getElementById('lexStatus');
@@ -225,7 +240,6 @@
                 statusBox.innerText = `Heard: "${spokenText}"`;
                 statusBox.style.color = "#38bdf8";
                 
-                // Scan clean, dedicated dataset
                 let matchFound = false;
                 for (let keyword in vaStatuteDatabase) {
                     if (spokenText.includes(keyword)) {
@@ -239,7 +253,7 @@
                     setTimeout(() => {
                         statusBox.innerText = "🎙️ Voice System Standby";
                         statusBox.style.color = "#22c55e";
-                        speakVerbalResponse("No direct statute match located in the Virginia database registry.");
+                        speakVerbalResponse("No direct statute match located.");
                     }, 1200);
                 }
             };
@@ -256,7 +270,6 @@
             `;
             document.getElementById('lexPopup').style.display = 'flex';
             
-            // Bilingual speech verification output loop
             const verbalScript = `Virginia Code Section ${data.code}. Classified as a ${data.class}. Law details: ${data.details}`;
             speakVerbalResponse(verbalScript);
         }
