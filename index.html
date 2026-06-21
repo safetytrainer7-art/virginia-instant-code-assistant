@@ -24,27 +24,30 @@
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             background-color: #0c111d;
             z-index: 10;
+            padding-top: calc(50px + env(safe-area-inset-top));
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
         }
 
-        /* PERFECT SQUARE CANVAS HOUSING */
+        /* HARDCODED GEOMETRIC WINDOW - PREVENTS ZERO-HEIGHT COLLAPSING */
         .lex-backdrop-wrapper {
             position: relative;
-            width: 100%;
-            height: 100%;
-            max-width: 100vh; 
-            max-height: 82vh; 
-            aspect-ratio: 1 / 1; 
-            background-size: contain;
+            width: 95vw;
+            height: 95vw;
+            max-width: 460px; 
+            max-height: 460px;
+            background-size: 100% 100%;
             background-position: center center;
             background-repeat: no-repeat;
             z-index: 1;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
-        /* HIGH-VISIBILITY MINIMALIST SYSTEM STATUS STRIP AT THE VERY TOP */
+        /* HIGH-VISIBILITY SYSTEM STATUS STRIP AT THE VERY TOP */
         .lex-top-status {
             position: absolute;
             top: calc(10px + env(safe-area-inset-top));
@@ -114,31 +117,29 @@
             border: 2px solid rgba(56, 189, 248, 0.5);
         }
 
-        /* FOOLPROOF MANUAL BACKUP SEARCH DECK */
+        /* MANUAL BACKUP SEARCH DECK SITS SOLIDLY AT BOTTOM */
         .manual-search-deck {
             width: 100%;
-            max-width: 400px;
-            padding: 0.5rem 1rem calc(10px + env(safe-area-inset-bottom)) 1rem;
+            max-width: 460px;
+            padding: 0.5rem 1rem;
             z-index: 20;
             display: flex;
             flex-direction: column;
-            gap: 5px;
             background: #0c111d;
         }
         .manual-input-field {
             width: 100%;
-            padding: 0.6rem;
+            padding: 0.75rem;
             background: #0f172a;
-            border: 1px solid rgba(234, 179, 8, 0.4);
+            border: 2px solid rgba(234, 179, 8, 0.4);
             border-radius: 6px;
             color: #ffffff;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             outline: none;
             text-align: center;
         }
         .manual-input-field:focus {
             border-color: #eab308;
-            box-shadow: 0 0 8px rgba(234, 179, 8, 0.3);
         }
 
         /* POPUP MODAL ARCHITECTURE FOR STATUTE RETRIEVAL */
@@ -197,11 +198,10 @@
             cursor: pointer;
         }
         
-        /* QUICK-LIST STYLING FOR DIRECT TAP LOOKUPS */
         .statute-tap-row {
-            padding: 0.6rem;
-            margin-bottom: 0.4rem;
-            background: rgba(255,255,255,0.03);
+            padding: 0.65rem;
+            margin-bottom: 0.45rem;
+            background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 4px;
             cursor: pointer;
@@ -229,12 +229,12 @@
                 <button class="medallion-btn" onclick="openDivisionDirectIndex('game')" title="Game & Fish Division"></button>
             </div>
 
-            <button class="mic-hotspot-btn" onclick="activateVoiceSearchEngine()" title="All Divisions Voice Activation"></button>
+            <button class="mic-hotspot-btn" onclick="activateVoiceSearchEngine()" title="Voice Activation"></button>
 
         </div>
 
         <div class="manual-search-deck">
-            <input type="text" id="manualSearchInput" class="manual-input-field" placeholder="🔍 TYPE HERE TO SEARCH (e.g. DUI, Suspended)" oninput="executeTextSearchEngine(this.value)">
+            <input type="text" id="manualSearchInput" class="manual-input-field" placeholder="🔍 TYPE LAW HERE (e.g. DUI, Suspended)" oninput="executeTextSearchEngine(this.value)">
         </div>
     </div>
 
@@ -327,7 +327,6 @@
             }
         };
 
-        // 100% FOOLPROOF DIRECT TOUCH SELECTION POPUP INDEX
         function openDivisionDirectIndex(divisionName) {
             window.speechSynthesis.cancel();
             
@@ -344,14 +343,14 @@
             }
 
             if (count === 0) {
-                listHtml += "<p style='text-align:center; color:#64748b; padding:1rem;'>Division database entries loading...</p>";
+                listHtml += "<p style='text-align:center; color:#64748b; padding:1rem;'>Entries loading...</p>";
             }
             listHtml += "</div>";
 
             document.getElementById('lexPopupContent').innerHTML = listHtml;
             document.getElementById('lexPopup').style.display = 'flex';
             
-            speakVerbalResponse(`${divisionName} index open. Tap any entry.`);
+            speakVerbalResponse(`${divisionName} index ready.`);
         }
 
         function displayDirectTargetedRecord(key) {
@@ -359,7 +358,6 @@
             displayLiveStatuteResult(data);
         }
 
-        // TEXT SEARCH ENGINE INDEX SLICER
         function executeTextSearchEngine(typedText) {
             const cleanedVal = typedText.toLowerCase().trim();
             if (cleanedVal.length < 2) return; 
@@ -422,11 +420,11 @@
                 }
             };
 
-            statusBox.innerText = "🎙️ WAITING FOR AUDIO SILENCE...";
+            statusBox.innerText = "🎙️ SYNCING AUDIO AUDIO...";
             statusBox.style.color = "#eab308";
             setTimeout(() => {
                 recognition.start();
-            }, 400);
+            }, 300);
         }
 
         function displayLiveStatuteResult(record) {
@@ -467,4 +465,30 @@
         function speakVerbalResponse(text) {
             window.speechSynthesis.cancel();
             
-            const clauses = text.match(/
+            const clauses = text.match(/[^.!?]+[.!?]*/g) || [text];
+            let clauseIndex = 0;
+            
+            function speakNextClause() {
+                if (clauseIndex >= clauses.length) return;
+                
+                const utterance = new SpeechSynthesisUtterance(clauses[clauseIndex].trim());
+                utterance.rate = 0.98; 
+                utterance.pitch = 1.0;
+                
+                utterance.onend = () => { clauseIndex++; speakNextClause(); };
+                utterance.onerror = () => { clauseIndex++; speakNextClause(); };
+
+                window.speechSynthesis.speak(utterance);
+            }
+            speakNextClause();
+        }
+
+        function closeLexPopupDisplay() {
+            window.speechSynthesis.cancel();
+            document.getElementById('lexPopup').style.display = 'none';
+            document.getElementById('lexStatus').innerText = "🎙️ SYSTEM READY";
+            document.getElementById('lexStatus').style.color = "#22c55e";
+        }
+    </script>
+</body>
+</html>
