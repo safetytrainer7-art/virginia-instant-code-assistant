@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -193,7 +192,7 @@
 
     <div class="lex-master-frame">
         <!-- TOP INDICATOR PANEL CHIP STRIP -->
-        <div id="lexStatus" class="lex-top-status">🎙️ Checking API Connection</div>
+        <div id="lexStatus" class="lex-top-status">🎙️ System Standby</div>
 
         <!-- SACRED SQUARE CONTAINER BACKGROUND IMAGE -->
         <div id="lexBackdrop" class="lex-backdrop-wrapper">
@@ -244,7 +243,7 @@
             let savedKey = localStorage.getItem('VA_LIS_KEY');
 
             if (!savedKey || forceReconfigure) {
-                let inputKey = prompt("VA LIS SECURE SETUP:\nPlease enter your required Virginia LIS Database API Key below. (Saved safely directly to your phone's storage):", savedKey || "");
+                let inputKey = prompt("VA LIS SECURE SETUP:\nPlease enter your required Virginia LIS Database API Key below:", savedKey || "");
                 if (inputKey) {
                     localStorage.setItem('VA_LIS_KEY', inputKey);
                     LIS_API_KEY = inputKey;
@@ -310,18 +309,15 @@
             recognition.start();
         }
 
-        // Live connection out to the official Virginia Legislative API endpoint
         function queryVirginiaLegislativeDatabase(searchKeyword, titleConstraint) {
             const statusBox = document.getElementById('lexStatus');
             
             if (!LIS_API_KEY) {
                 statusBox.innerText = "❌ Key Authorization Deficit";
-                speakVerbalResponse("Database error. Your local security key is missing or unconfigured.");
+                speakVerbalResponse("Database error. Your local security key is missing.");
                 return;
             }
 
-            // Standard query parameters targeting the official LIS endpoint structure
-            // Pushes your hidden API key and filters by the specific title constraint selected
             const targetEndpoint = `https://law.lis.virginia.gov/api/getcodecombosearch/${encodeURIComponent(searchKeyword)}?title=${titleConstraint}&key=${LIS_API_KEY}`;
 
             fetch(targetEndpoint)
@@ -330,27 +326,25 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Verifies if records populated in the live payload check
                     if (data && data.length > 0) {
                         displayLiveStatuteResult(data[0]);
                     } else {
                         statusBox.innerText = "🎙️ System Standby";
                         statusBox.style.color = "#22c55e";
-                        speakVerbalResponse(`No direct statutory matches located for ${searchKeyword} under these titles.`);
+                        speakVerbalResponse(`No direct matches found for ${searchKeyword}.`);
                     }
                 })
                 .catch(err => {
                     console.error(err);
                     statusBox.innerText = "❌ Live LIS Timeout";
-                    speakVerbalResponse("Connection interface timeout. Falling back to local offline protocol.");
+                    speakVerbalResponse("Connection interface timeout.");
                 });
         }
 
         function displayLiveStatuteResult(record) {
-            // Parses incoming keys from the standard LIS JSON scheme 
             const sectionNumber = record.SectionNumber || "Live Code";
             const sectionTitle = record.SectionTitle || "Statutory Record";
-            const lawBodyText = record.SectionText || "No body text returned from state registry query.";
+            const lawBodyText = record.SectionText || "No body text returned.";
 
             document.getElementById('lexPopupTitle').innerText = `${sectionNumber}`;
             document.getElementById('lexPopupContent').innerHTML = `
@@ -359,15 +353,69 @@
             `;
             document.getElementById('lexPopup').style.display = 'flex';
             
-            const verbalScript = `Virginia Code Section ${sectionNumber.replace('§', '')}. ${sectionTitle}. Details follow: ${lawBodyText}`;
-            speakVerbalResponse(verbalScript);
+            // Clean the legal language so it reads beautifully without audio clipping
+            const cleanedAudioText = cleanLegalTextForSpeech(sectionNumber, sectionTitle, lawBodyText);
+            speakVerbalResponse(cleanedAudioText);
+        }
+
+        // ADVANCED VOCAL CLEANING SCRUBBER ENGINE
+        function cleanLegalTextForSpeech(number, title, text) {
+            // Step 1: Clean section marker symbols
+            let clean = `Virginia Code Section ${number.replace(/§/g, '').trim()}. ${title}. `;
+            
+            // Step 2: Extract text from any residual raw HTML brackets
+            let tempDiv = document.createElement("div");
+            tempDiv.innerHTML = text;
+            let targetText = tempDiv.textContent || tempDiv.innerText || "";
+
+            // Step 3: Global abbreviation expansion updates
+            targetText = targetText.replace(/subdiv\./gi, "subdivision");
+            targetText = targetText.replace(/para\./gi, "paragraph");
+            targetText = targetText.replace(/va\./gi, "Virginia");
+            
+            // Step 4: Format code sublists so the reader voices them cleanly
+            targetText = targetText.replace(/\(([a-zA-Z0-9]+)\)/g, (match, group) => {
+                return `, sub section ${group.toUpperCase()}, `;
+            });
+
+            // Step 5: Strip remaining mechanical bracket clutter
+            targetText = targetText.replace(/[\/\#\$\%\^\&\*\{\}\[\]\<\>\-\_\=\+\~]/g, " ");
+            
+            // Step 6: Collapse white space lines to construct fluid pauses
+            targetText = targetText.replace(/\s+/g, " ");
+
+            clean += targetText;
+            return clean;
         }
 
         function speakVerbalResponse(text) {
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.98;
-            window.speechSynthesis.speak(utterance);
+            
+            // Breaks the string chunk into controlled clauses to guarantee device memory stability
+            const clauses = text.match(/[^.!?]+[.!?]*/g) || [text];
+            
+            let clauseIndex = 0;
+            function speakNextClause() {
+                if (clauseIndex >= clauses.length) return;
+                
+                const utterance = new SpeechSynthesisUtterance(clauses[clauseIndex].trim());
+                utterance.rate = 0.98; // Adjusted pacing speed for clean cabin audio
+                utterance.pitch = 1.0;
+                
+                utterance.onend = () => {
+                    clauseIndex++;
+                    speakNextClause();
+                };
+                
+                utterance.onerror = () => {
+                    clauseIndex++;
+                    speakNextClause();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+            
+            speakNextClause();
         }
 
         function closeLexPopupDisplay() {
