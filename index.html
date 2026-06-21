@@ -11,59 +11,67 @@
             width: 100%; 
             height: 100%; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #0c111d; /* Solid dark backing matching leather trim */
+            background-color: #0c111d; /* Matches the deep leather backing trim */
             color: #f8fafc; 
             overflow: hidden;
             position: fixed;
             touch-action: none;
         }
 
-        /* MASTER ISOLATED CANVAS CONTAINMENT */
+        /* MASTER FLEXBOX LAYOUT CONTAINER */
         .lex-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
             background-color: #0c111d;
             z-index: 10;
         }
 
-        /* FIXED ASPECT RATIO ENGINE - PREVENTS STRETCHING OR DISTORTION */
-        .lex-backdrop {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: contain; /* Keeps image proportions 100% perfect */
-            background-position: center center; /* Centers the square on the phone screen */
+        /* ASPECT-RATIO PROPORTIONAL GRAPHIC ANCHOR ENGINE */
+        .lex-backdrop-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 100vh; /* Prevents stretching past perfect square proportions on wide displays */
+            max-height: 100vw;
+            aspect-ratio: 1 / 1; /* Forces the canvas to remain a perfect, undistorted square */
+            background-size: contain;
+            background-position: center center;
             background-repeat: no-repeat;
             z-index: 1;
-        }
-
-        /* TRANSPARENT COVER HIT ENGINE OVER IMAGE MEDALLIONS */
-        .lex-interaction-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 5;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+            align-items: center;
+        }
+
+        /* TRANSPARENT HIT ENGINE COVER */
+        .lex-interaction-overlay {
+            width: 100%;
+            padding-bottom: 2rem;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* TACTICAL UTILITY FOOTER CONTROL PANEL */
         .lex-footer-menu {
-            width: 90%;
-            max-width: 380px;
-            margin: 0 auto;
-            background: rgba(15, 23, 42, 0.95);
-            border: 2px solid rgba(234, 179, 8, 0.5);
+            width: 85%;
+            max-width: 340px;
+            background: rgba(15, 23, 42, 0.96);
+            border: 2px solid rgba(234, 179, 8, 0.6);
             border-radius: 8px;
-            padding: 0.85rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 15px 25px rgba(0,0,0,0.8);
+            padding: 0.75rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.9);
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.45rem;
         }
 
         .lex-status-readout {
@@ -74,7 +82,7 @@
             letter-spacing: 1px;
             color: #22c55e;
             background: #000000;
-            padding: 0.4rem;
+            padding: 0.35rem;
             border-radius: 4px;
             border: 1px solid rgba(255,255,255,0.1);
             font-weight: bold;
@@ -82,18 +90,18 @@
 
         .lex-btn {
             width: 100%;
-            padding: 0.7rem;
+            padding: 0.65rem;
             background: linear-gradient(180deg, #1e293b, #0f172a);
             border: 1px solid rgba(234, 179, 8, 0.5);
             color: #eab308;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             border-radius: 4px;
             cursor: pointer;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
         }
         .lex-btn:active {
             background: #eab308;
@@ -149,14 +157,16 @@
 <body>
 
     <div class="lex-container">
-        <div id="lexBackdrop" class="lex-backdrop"></div>
-
-        <div class="lex-interaction-overlay">
-            <div class="lex-footer-menu">
-                <div id="lexStatus" class="lex-status-readout">🎙️ Voice System Standby</div>
-                <button class="lex-btn" onclick="activateVoiceSearchEngine()">Tap to Speak Command</button>
-                <button class="lex-btn" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);" onclick="openManualIndexPopup()">Manual Index Database</button>
+        <div id="lexBackdrop" class="lex-backdrop-wrapper">
+            
+            <div class="lex-interaction-overlay">
+                <div class="lex-footer-menu">
+                    <div id="lexStatus" class="lex-status-readout">🎙️ Voice System Standby</div>
+                    <button class="lex-btn" onclick="activateVoiceSearchEngine()">Tap to Speak Command</button>
+                    <button class="lex-btn" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);" onclick="openManualIndexPopup()">Manual Index Database</button>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -169,7 +179,7 @@
     </div>
 
     <script>
-        // Precision PNG targeted image loader with hardware cache block execution
+        // Synchronized secure asset image cache lock verification
         window.addEventListener('load', () => {
             const backdrop = document.getElementById('lexBackdrop');
             const cacheBuster = "?v=" + new Date().getTime();
