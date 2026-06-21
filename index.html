@@ -28,7 +28,7 @@
             z-index: 10;
         }
 
-        /* BACKGROUND IMMERSION LOCK PANEL WITH MULTIPLE BACKUPS */
+        /* BACKGROUND IMMERSION LOCK PANEL ROUTED DIRECTLY TO PNG SYSTEM */
         .lex-backdrop {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -169,20 +169,22 @@
     </div>
 
     <script>
-        // Appends a cache-buster timestamp to break any blank mobile memory locks
+        // Precision PNG targeted image loader with hardware cache block execution
         window.addEventListener('load', () => {
             const backdrop = document.getElementById('lexBackdrop');
             const cacheBuster = "?v=" + new Date().getTime();
             
             const img = new Image();
             img.onload = () => {
-                backdrop.style.backgroundImage = `url('gggg.jpg${cacheBuster}')`;
+                // Pin point target to your exact uploaded image file asset
+                backdrop.style.backgroundImage = `url('gggg.png${cacheBuster}')`;
+                console.log("LEX interface graphic successfully deployed.");
             };
             img.onerror = () => {
-                // If it fails, checks uppercase filename configuration automatically
-                backdrop.style.backgroundImage = `url('gggg.JPG${cacheBuster}')`;
+                // Case sensitivity fail-safe layer
+                backdrop.style.backgroundImage = `url('gggg.PNG${cacheBuster}')`;
             };
-            img.src = 'gggg.jpg';
+            img.src = 'gggg.png';
         });
 
         const vaStatuteDatabase = {
@@ -214,7 +216,8 @@
                 return;
             }
 
-            const recognition = new Recognition();
+            // Fixed internal constructor for webkit cross compatibility alignment
+            const recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
