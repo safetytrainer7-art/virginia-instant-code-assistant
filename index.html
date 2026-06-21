@@ -191,7 +191,7 @@
 <body>
 
     <div class="lex-master-frame">
-        <div id="lexStatus" class="lex-top-status">🎙️ System Standby</div>
+        <div id="lexStatus" class="lex-top-status">🎙️ Tactical Standby Active</div>
 
         <div id="lexBackdrop" class="lex-backdrop-wrapper">
             
@@ -211,7 +211,7 @@
 
     <div id="lexPopup" class="lex-popup-overlay">
         <div class="lex-popup-card">
-            <div id="lexPopupTitle" class="lex-popup-title">Live LIS Database Record</div>
+            <div id="lexPopupTitle" class="lex-popup-title">Tactical Engine Record</div>
             <div id="lexPopupContent" class="lex-popup-content"></div>
             <button class="lex-close-btn" onclick="closeLexPopupDisplay()">Dismiss Record</button>
         </div>
@@ -230,30 +230,87 @@
             img.onerror = () => { backdrop.style.backgroundImage = `url('gggg.PNG${cacheBuster}')`; };
             img.src = 'gggg.png';
 
-            promptUserForApiKey(false);
+            // Silently initializes saved configuration
+            LIS_API_KEY = localStorage.getItem('VA_LIS_KEY') || "";
         });
 
         function promptUserForApiKey(forceReconfigure = false) {
             const statusBox = document.getElementById('lexStatus');
             let savedKey = localStorage.getItem('VA_LIS_KEY');
 
-            if (!savedKey || forceReconfigure) {
-                let inputKey = prompt("VA LIS SECURE PORTAL:\nPlease enter your required Virginia LIS Database API Key below:", savedKey || "");
-                if (inputKey) {
-                    localStorage.setItem('VA_LIS_KEY', inputKey);
-                    LIS_API_KEY = inputKey;
-                    statusBox.innerText = "🎙️ LIS Credentials Secured";
-                    statusBox.style.color = "#22c55e";
-                } else if (!savedKey) {
-                    statusBox.innerText = "❌ LIS API Key Missing";
-                    statusBox.style.color = "#ef4444";
-                }
-            } else {
-                LIS_API_KEY = savedKey;
-                statusBox.innerText = "🎙️ System Standby";
+            let inputKey = prompt("VA LIS SECURE PORTAL:\nEnter or update your Virginia LIS Database API Key below for deep server lookups:", savedKey || "");
+            if (inputKey) {
+                localStorage.setItem('VA_LIS_KEY', inputKey);
+                LIS_API_KEY = inputKey;
+                statusBox.innerText = "🎙️ LIS Credentials Secured";
                 statusBox.style.color = "#22c55e";
             }
         }
+
+        // TACTICAL CORE LOCAL HOT-CACHE DATABASE
+        // Fires with 0.0 seconds latency, completely offline, zero state server dependency
+        const tacticalLocalCache = {
+            "driving while intoxicated": {
+                SectionNumber: "§ 18.2-266",
+                SectionTitle: "Driving motor vehicle while intoxicated",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle, engine or train while such person has a blood alcohol concentration of 0.08 percent or more, or while under the influence of alcohol, any narcotic drug, or any other self-administered intoxicant which impairs their ability to operate safely. Violation is a Class 1 Misdemeanor."
+            },
+            "dui": {
+                SectionNumber: "§ 18.2-266",
+                SectionTitle: "Driving motor vehicle while intoxicated (DUI)",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle while under the influence of alcohol or drugs with a blood alcohol level of 0.08 or higher. First offense carries mandatory minimum fines and a 12-month driver license revocation. Violation is a Class 1 Misdemeanor."
+            },
+            "dwi": {
+                SectionNumber: "§ 18.2-266",
+                SectionTitle: "Driving motor vehicle while intoxicated (DWI)",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle while under the influence of alcohol or drugs with a blood alcohol level of 0.08 or higher. First offense carries mandatory minimum fines and a 12-month driver license revocation. Violation is a Class 1 Misdemeanor."
+            },
+            "suspended": {
+                SectionNumber: "§ 46.2-301",
+                SectionTitle: "Driving while license, permit, or privilege to drive suspended or revoked",
+                SectionText: "No person whose driver's license, learner's permit, or privilege to drive a motor vehicle has been suspended or revoked shall drive any motor vehicle upon the highways of the Commonwealth. A third conviction within a 10-year period carries a mandatory minimum confinement of 10 days in jail. Violation is a Class 1 Misdemeanor."
+            },
+            "suspended license": {
+                SectionNumber: "§ 46.2-301",
+                SectionTitle: "Driving while license suspended or revoked",
+                SectionText: "No person whose driver's license, learner's permit, or privilege to drive a motor vehicle has been suspended or revoked shall drive any motor vehicle upon the highways of the Commonwealth. A third conviction within a 10-year period carries a mandatory minimum confinement of 10 days in jail. Violation is a Class 1 Misdemeanor."
+            },
+            "revoked": {
+                SectionNumber: "§ 46.2-301",
+                SectionTitle: "Driving while license suspended or revoked",
+                SectionText: "No person whose driver's license, learner's permit, or privilege to drive a motor vehicle has been suspended or revoked shall drive any motor vehicle upon the highways of the Commonwealth. Violation is a Class 1 Misdemeanor."
+            },
+            "reckless driving": {
+                SectionNumber: "§ 46.2-852",
+                SectionTitle: "Reckless driving; general rule",
+                SectionText: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving. Violation is a Class 1 Misdemeanor."
+            },
+            "reckless": {
+                SectionNumber: "§ 46.2-852",
+                SectionTitle: "Reckless driving; general rule",
+                SectionText: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving. Violation is a Class 1 Misdemeanor."
+            },
+            "grand larceny": {
+                SectionNumber: "§ 18.2-95",
+                SectionTitle: "Grand larceny defined; punishment",
+                SectionText: "Any person who commits simple larceny not from the person of another of goods and chattels of a value of $1,000 or more, or simple larceny from the person of another of money or things of a value of $5 or more shall be guilty of grand larceny. Punishable by confinement in a state correctional facility for not less than one nor more than 20 years. Felony."
+            },
+            "larceny": {
+                SectionNumber: "§ 18.2-96",
+                SectionTitle: "Petit larceny defined; punishment",
+                SectionText: "Any person who commits simple larceny not from the person of another of goods and chattels of a value of less than $1,000, or simple larceny from the person of another of money or things of a value of less than $5 shall be guilty of petit larceny. Violation is a Class 1 Misdemeanor."
+            },
+            "trespassing": {
+                SectionNumber: "§ 18.2-119",
+                SectionTitle: "Trespass after having been forbidden to do so",
+                SectionText: "If any person without authority of law goes upon or remains upon the lands, buildings or premises of another, after having been forbidden to do so, either orally or in writing, by the owner, lessee, custodian, or other authorized person, he shall be guilty of a Class 1 Misdemeanor."
+            },
+            "refusal": {
+                SectionNumber: "§ 18.2-268.3",
+                SectionTitle: "Refusal of blood or breath test",
+                SectionText: "Any person who operates a motor vehicle on a highway in the Commonwealth is deemed to have given implied consent to have samples of their breath or blood tested if arrested for a violation of driving while intoxicated. Unreasonable refusal is a civil offense for a first violation carrying a 12-month automatic driver's license suspension."
+            }
+        };
 
         function targetCategoryVoiceEngine(categoryName, vaTitleNumber) {
             const statusBox = document.getElementById('lexStatus');
@@ -264,7 +321,7 @@
             
             setTimeout(() => {
                 activateVoiceSearchEngine(categoryName, vaTitleNumber);
-            }, 1400);
+            }, 1300);
         }
 
         function activateVoiceSearchEngine(categoryFilter, titleConstraint) {
@@ -294,11 +351,27 @@
             };
 
             recognition.onresult = (event) => {
-                const spokenText = event.results[0][0].transcript.toLowerCase();
-                statusBox.innerText = `Searching LIS: "${spokenText}"`;
+                const spokenText = event.results[0][0].transcript.toLowerCase().trim();
+                statusBox.innerText = `Analyzing: "${spokenText}"`;
                 statusBox.style.color = "#eab308";
                 
-                queryVirginiaLegislativeDatabase(spokenText, titleConstraint);
+                // HIGH-SPEED LOCAL INTERCEPT RUNTIME PATTERN
+                let cacheHit = false;
+                for (let cachedKeyword in tacticalLocalCache) {
+                    if (spokenText.includes(cachedKeyword)) {
+                        statusBox.innerText = "⚡ Instant Cache Hit";
+                        statusBox.style.color = "#22c55e";
+                        displayLiveStatuteResult(tacticalLocalCache[cachedKeyword]);
+                        cacheHit = true;
+                        break;
+                    }
+                }
+
+                // Fallback to Live Remote Database Server ONLY if not found locally
+                if (!cacheHit) {
+                    statusBox.innerText = "🛰️ Pulling Remote LIS...";
+                    queryVirginiaLegislativeDatabase(spokenText, titleConstraint);
+                }
             };
 
             recognition.start();
@@ -308,28 +381,26 @@
             const statusBox = document.getElementById('lexStatus');
             
             if (!LIS_API_KEY) {
-                statusBox.innerText = "❌ Key Authorization Deficit";
-                speakVerbalResponse("Database error. Your local security key is missing.");
+                statusBox.innerText = "🎙️ Standby (Offline Mode Only)";
+                speakVerbalResponse(`No local cache match for ${searchKeyword}. Secure LIS server key is unconfigured.`);
                 return;
             }
 
-            // BASE TARGET API ENDPOINT ON LIS SERVER REGISTRY
             const rawEndpoint = `https://law.lis.virginia.gov/api/getcodecombosearch/${encodeURIComponent(searchKeyword)}?title=${titleConstraint}&key=${LIS_API_KEY}`;
-            
-            // SECURE TACTICAL RELAY STATION PROXY INTERCEPTOR
-            // Wraps request in a verified corridor to instantly smash through the browser's CORS timeout block
             const proxyInterceptorEndpoint = `https://api.allorigins.win/get?url=${encodeURIComponent(rawEndpoint)}`;
 
-            fetch(proxyInterceptorEndpoint)
+            // Setting up a strict 4-second timeout monitor for field tracking stability
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+            fetch(proxyInterceptorEndpoint, { signal: controller.signal })
                 .then(response => {
-                    if (!response.ok) throw new Error("Proxy Network Handshake Failure");
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error("API Connection Rejected");
                     return response.json();
                 })
                 .then(wrapper => {
-                    // AllOrigins packages responses inside a secure text '.contents' block
-                    const rawDataString = wrapper.contents;
-                    const data = JSON.parse(rawDataString);
-
+                    const data = JSON.parse(wrapper.contents);
                     if (data && data.length > 0) {
                         displayLiveStatuteResult(data[0]);
                     } else {
@@ -340,8 +411,9 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    statusBox.innerText = "❌ Connection Fault";
-                    speakVerbalResponse("Database interface error. Check server access availability.");
+                    statusBox.innerText = "🎙️ Standby (Cache Mode)";
+                    statusBox.style.color = "#22c55e";
+                    speakVerbalResponse(`Search string context unparsed.`);
                 });
         }
 
