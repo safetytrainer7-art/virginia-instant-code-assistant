@@ -11,45 +11,68 @@
             width: 100%; 
             height: 100%; 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #0c111d; /* Solid backing matching leather edge */
+            background-color: #0c111d; 
             color: #f8fafc; 
             overflow: hidden;
             position: fixed;
             touch-action: none;
         }
 
-        /* MASTER ENGINE STACKING CONTENT VERTICALLY WITHOUT OVERLAP */
+        /* MASTER LAYOUT ENGINE */
         .lex-master-frame {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
             background-color: #0c111d;
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 10;
         }
 
-        /* PERFECT SQUARE GRAPHIC WRAPPER CONTAINER */
+        /* PERFECT SQUARE CANVAS HOUSING */
         .lex-backdrop-wrapper {
             position: relative;
             width: 100%;
-            flex-grow: 1;
-            max-width: 100vh;
-            max-height: 70vh; /* Limits image height to leave plenty of room below */
-            aspect-ratio: 1 / 1;
+            height: 100%;
+            max-width: 100vh; 
+            max-height: 100vw;
+            aspect-ratio: 1 / 1; 
             background-size: contain;
             background-position: center center;
             background-repeat: no-repeat;
             z-index: 1;
         }
 
-        /* GRID SYSTEM MAPPING TRANSPARENT BUTTONS DIRECTLY OVER MEDALLIONS */
+        /* HIGH-VISIBILITY MINIMALIST SYSTEM STATUS STRIP AT THE VERY TOP */
+        .lex-top-status {
+            position: absolute;
+            top: calc(10px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            font-family: monospace;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #22c55e;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(234, 179, 8, 0.4);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* GRID MAPPING INTERACTIVE TOUCH ZONES OVER CHIPS */
         .medallion-touch-grid {
             position: absolute;
-            top: 31%; /* Lines up vertically with your medallion rows */
+            top: 31%; 
             left: 10%;
-            width: 53%; /* Constrains width to cover the left and right rows */
+            width: 53%; 
             height: 52%;
             z-index: 5;
             display: grid;
@@ -58,7 +81,6 @@
             gap: 12px;
         }
 
-        /* INVISIBLE HIGH-PERFORMANCE TOUCH TARGET FOR INDIVIDUAL MEDALLION BUTTONS */
         .medallion-btn {
             background: rgba(255, 255, 255, 0);
             border-radius: 50%;
@@ -68,73 +90,33 @@
             touch-action: manipulation;
             transition: background 0.15s ease;
         }
-        /* Visual flash confirmation when a deputy taps a medallion button */
         .medallion-btn:active {
             background: rgba(234, 179, 8, 0.25);
-            border: 2px solid rgba(234, 179, 8, 0.6);
+            border: 2px solid rgba(234, 179, 8, 0.5);
         }
 
-        /* CONTROL CONSOLE - SITUATED COMPLETELY BELOW THE IMAGE BOUNDS */
-        .lex-interaction-overlay {
-            width: 100%;
-            padding: 0.75rem 0;
-            z-index: 10;
-            background-color: #0c111d;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .lex-footer-menu {
-            width: 90%;
-            max-width: 360px;
-            background: rgba(15, 23, 42, 0.96);
-            border: 2px solid #eab308;
+        /* TRANSPARENT OVERLAY HOTSPOT DIRECTLY OVER THE MIC GRAPHIC */
+        .mic-hotspot-btn {
+            position: absolute;
+            top: 34%;
+            right: 10%;
+            width: 20%;
+            height: 44%;
+            z-index: 5;
+            background: rgba(255, 255, 255, 0);
             border-radius: 8px;
-            padding: 0.65rem;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-        }
-
-        .lex-status-readout {
-            font-family: monospace;
-            font-size: 0.75rem;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #22c55e;
-            background: #000000;
-            padding: 0.4rem;
-            border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.1);
-            font-weight: bold;
-        }
-
-        .lex-btn {
-            width: 100%;
-            padding: 0.7rem;
-            background: linear-gradient(180deg, #1e293b, #0f172a);
-            border: 1px solid rgba(234, 179, 8, 0.5);
-            color: #eab308;
-            font-weight: 800;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 4px;
+            border: none;
             cursor: pointer;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            outline: none;
+            touch-action: manipulation;
+            transition: background 0.15s ease;
         }
-        .lex-btn:active {
-            background: #eab308;
-            color: #000000;
-            border-color: #ffffff;
+        .mic-hotspot-btn:active {
+            background: rgba(38, 189, 248, 0.2);
+            border: 2px solid rgba(56, 189, 248, 0.5);
         }
 
-        /* POPUP WINDOW CONFIGS */
+        /* POPUP MODAL ARCHITECTURE FOR STATUTE RETRIEVAL */
         .lex-popup-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -177,11 +159,25 @@
             padding: 0.5rem;
             border-radius: 4px;
         }
+        .lex-close-btn {
+            width: 100%;
+            padding: 0.65rem;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            border: 1px solid rgba(234, 179, 8, 0.5);
+            color: #eab308;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <div class="lex-master-frame">
+        <div id="lexStatus" class="lex-top-status">🎙️ System Standby</div>
+
         <div id="lexBackdrop" class="lex-backdrop-wrapper">
             
             <div class="medallion-touch-grid">
@@ -191,14 +187,8 @@
                 <button class="medallion-btn" onclick="targetCategoryVoiceEngine('game')" title="Game & Fish Division"></button>
             </div>
 
-        </div>
+            <button class="mic-hotspot-btn" onclick="activateVoiceSearchEngine('all')" title="All Divisions Voice Activation"></button>
 
-        <div class="lex-interaction-overlay">
-            <div class="lex-footer-menu">
-                <div id="lexStatus" class="lex-status-readout">🎙️ Voice System Standby</div>
-                <button class="lex-btn" onclick="activateVoiceSearchEngine('all')">Tap to Speak (All Divisions)</button>
-                <button class="lex-btn" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2);" onclick="openManualIndexPopup()">Manual Index Database</button>
-            </div>
         </div>
     </div>
 
@@ -206,12 +196,12 @@
         <div class="lex-popup-card">
             <div id="lexPopupTitle" class="lex-popup-title">Statute Lookup Result</div>
             <div id="lexPopupContent" class="lex-popup-content"></div>
-            <button class="lex-btn" onclick="closeLexPopupDisplay()">Dismiss Record</button>
+            <button class="lex-close-btn" onclick="closeLexPopupDisplay()">Dismiss Record</button>
         </div>
     </div>
 
     <script>
-        // Cache-protected image loader loop matching local asset parameters
+        // Automatic graphic configuration file layout mapper
         window.addEventListener('load', () => {
             const backdrop = document.getElementById('lexBackdrop');
             const cacheBuster = "?v=" + new Date().getTime();
@@ -226,7 +216,6 @@
             img.src = 'gggg.png';
         });
 
-        // Expanded system database organized by division matching your layout medals
         const vaStatuteDatabase = {
             "grand larceny": {
                 code: "§ 18.2-95", class: "Felony", category: "criminal",
@@ -246,18 +235,16 @@
             }
         };
 
-        // Medallion custom click target routing mechanism
         function targetCategoryVoiceEngine(categoryType) {
             const statusBox = document.getElementById('lexStatus');
-            statusBox.innerText = `Target Locked: ${categoryType.toUpperCase()}`;
+            statusBox.innerText = `🎙️ ${categoryType.toUpperCase()} MODE`;
             statusBox.style.color = "#eab308";
             
-            // Speaks tracking confirmation tone to operator hands-free
-            speakVerbalResponse(`LEX system division filter locked to ${categoryType}. State keyword.`);
+            speakVerbalResponse(`Locked to ${categoryType}. State keyword.`);
             
             setTimeout(() => {
                 activateVoiceSearchEngine(categoryType);
-            }, 1800);
+            }, 1400);
         }
 
         function activateVoiceSearchEngine(activeFilter = 'all') {
@@ -266,7 +253,7 @@
             
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                statusBox.innerText = "❌ Speech Systems Blocked";
+                statusBox.innerText = "❌ Speech Blocked";
                 statusBox.style.color = "#ef4444";
                 return;
             }
@@ -277,12 +264,12 @@
             recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
-                statusBox.innerText = activeFilter === 'all' ? "Listening (All Divisions)..." : `Listening (${activeFilter.toUpperCase()})...`;
+                statusBox.innerText = activeFilter === 'all' ? "🎙️ Listening (All Divisions)..." : `🎙️ Listening (${activeFilter.toUpperCase()})...`;
                 statusBox.style.color = "#38bdf8";
             };
 
             recognition.onerror = () => {
-                statusBox.innerText = "🎙️ Voice System Standby";
+                statusBox.innerText = "🎙️ System Standby";
                 statusBox.style.color = "#22c55e";
             };
 
@@ -296,7 +283,6 @@
                     if (spokenText.includes(keyword)) {
                         const targetData = vaStatuteDatabase[keyword];
                         
-                        // Validates category lock matches before printing
                         if (activeFilter !== 'all' && targetData.category !== activeFilter) {
                             continue; 
                         }
@@ -309,9 +295,9 @@
 
                 if (!matchFound) {
                     setTimeout(() => {
-                        statusBox.innerText = "🎙️ Voice System Standby";
+                        statusBox.innerText = "🎙️ System Standby";
                         statusBox.style.color = "#22c55e";
-                        speakVerbalResponse("No matching code entry resolved in this sequence.");
+                        speakVerbalResponse("No matching code entry resolved.");
                     }, 1200);
                 }
             };
@@ -339,21 +325,10 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        function openManualIndexPopup() {
-            document.getElementById('lexPopupTitle').innerText = "Virginia Statutory Index";
-            let listHtml = "<ul style='list-style:none;'>";
-            for (let keyword in vaStatuteDatabase) {
-                listHtml += `<li style='padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); color:#38bdf8; cursor:pointer;' onclick='closeLexPopupDisplay(); executeStatuteMatchDisplay("${keyword}");'><b>${vaStatuteDatabase[keyword].code}</b> - ${keyword.toUpperCase()} [${vaStatuteDatabase[keyword].category.toUpperCase()}]</li>`;
-            }
-            listHtml += "</ul>";
-            document.getElementById('lexPopupContent').innerHTML = listHtml;
-            document.getElementById('lexPopup').style.display = 'flex';
-        }
-
         function closeLexPopupDisplay() {
             window.speechSynthesis.cancel();
             document.getElementById('lexPopup').style.display = 'none';
-            document.getElementById('lexStatus').innerText = "🎙️ Voice System Standby";
+            document.getElementById('lexStatus').innerText = "🎙️ System Standby";
             document.getElementById('lexStatus').style.color = "#22c55e";
         }
     </script>
