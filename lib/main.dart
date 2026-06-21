@@ -1,51 +1,48 @@
-
 import 'package:flutter/material.dart';
-import 'package:appwrite/appwrite.dart';
-import 'package:appwrite/models.dart' as models;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 
 void main() {
-  runApp(const VirginiaInstantCodeAssistantApp());
+  runApp(const TacnetMasterApp());
 }
 
-class VirginiaInstantCodeAssistantApp extends StatelessWidget {
-  const VirginiaInstantCodeAssistantApp({Key? key}) : super(key: key);
+class TacnetMasterApp extends StatelessWidget {
+  const TacnetMasterApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Virginia Instant Code Assistant',
+      title: 'TACNET Mobile',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0A180E), // Textured dark green background
+        scaffoldBackgroundColor: const Color(0xFF0A141D), // Royal/Tactical Dark Blue backing
       ),
-      home: const VicaHomeScreen(),
+      home: const TacnetHomeScreen(),
     );
   }
 }
 
-class VicaHomeScreen extends StatefulWidget {
-  const VicaHomeScreen({Key? key}) : super(key: key);
+class TacnetHomeScreen extends StatefulWidget {
+  const TacnetHomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<VicaHomeScreen> createState() => _VicaHomeScreenState();
+  State<TacnetHomeScreen> createState() => _TacnetHomeScreenState();
 }
 
-class _VicaHomeScreenState extends State<VicaHomeScreen> {
-  // Voice Engines
+class _TacnetHomeScreenState extends State<TacnetHomeScreen> {
   late stt.SpeechToText _speech;
   late FlutterTts _tts;
   bool _isListening = false;
-  String _recognizedVoiceText = "";
+  
+  // Local Database Vault: Stores mission data right on the device chips
+  final List<Map<String, String>> _localTrapTraceLogs = [
+    {"timestamp": "14:22", "target": "Target-Alpha", "sector": "Sector 4 - Active Ping"},
+    {"timestamp": "14:45", "target": "Target-Alpha", "sector": "Sector 2 - Signal Trace Locked"},
+  ];
 
-  // Appwrite Engine
-  late Client _client;
-  late Databases _databases;
-  bool _isDbConnected = false;
-  String _searchResultTitle = "No Active Search";
-  String _searchResultBody = "Tap the mic or select a category to view codes.";
+  String _operationStatusTitle = "TRAP & TRACE: ACTIVE";
+  String _operationStatusBody = "System running completely offline. Monitoring local tracking arrays.";
 
   @override
   void initState() {
@@ -54,22 +51,6 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
     _tts = FlutterTts();
     _tts.setLanguage("en-US");
     _tts.setSpeechRate(0.45);
-
-    _initAppwrite();
-  }
-
-  // Live Database Wire-up
-  void _initAppwrite() {
-    _client = Client()
-      ..setEndpoint('https://cloud.appwrite.io/v1') // Appwrite Cloud Endpoint
-      ..setProject('6a37d453000ed7b5eff5');       // Your Project ID
-
-    _databases = Databases(_client);
-    
-    // Test connection availability
-    setState(() {
-      _isDbConnected = true;
-    });
   }
 
   void _toggleVoiceActivation() async {
@@ -79,10 +60,9 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
         setState(() => _isListening = true);
         _speech.listen(
           onResult: (val) => setState(() {
-            _recognizedVoiceText = val.recognizedWords;
             if (val.finalResult) {
               _isListening = false;
-              _executeLawLookup(_recognizedVoiceText);
+              _processVoiceCommand(val.recognizedWords);
             }
           }),
         );
@@ -93,47 +73,29 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
     }
   }
 
-  // Queries the database for the spoken or typed law
-  void _executeLawLookup(String query) async {
-    if (query.isEmpty) return;
-
-    setState(() {
-      _searchResultTitle = "Searching...";
-      _searchResultBody = "Querying live Virginia statutes for '$query'...";
-    });
-
-    try {
-      // Queries your Appwrite database and collection directly
-      final response = await _databases.listDocuments(
-        databaseId: 'tacnet-search-app',
-        collectionId: 'virginia_statutes',
-        queries: [
-          Query.search('code_section', query), // Searches the code section column
-        ],
-      );
-
-      if (response.documents.isNotEmpty) {
-        var doc = response.documents.first;
-        setState(() {
-          _searchResultTitle = doc.data['code_section'] ?? 'Unknown Code';
-          _searchResultBody = doc.data['description'] ?? 'No description available.';
-        });
-        
-        // Text-to-Speech broadcasts the law out loud over patrol vehicle speakers
-        await _tts.speak("Section $_searchResultTitle. $_searchResultBody");
-      } else {
-        setState(() {
-          _searchResultTitle = "Not Found";
-          _searchResultBody = "No matching Virginia statute found for '$query'.";
-        });
-        await _tts.speak("No matching statute found.");
-      }
-    } catch (e) {
+  void _processVoiceCommand(String command) async {
+    String cleanCommand = command.toLowerCase();
+    
+    if (cleanCommand.contains("trace") || cleanCommand.contains("trap")) {
       setState(() {
-        _searchResultTitle = "Connection Error";
-        _searchResultBody = "Could not pull records. Verify your network or Appwrite tables.";
+        _operationStatusTitle = "Trap & Trace Triggered";
+        _operationStatusBody = "Voice command recognized. Executing target vector scanning.";
+      });
+      await _tts.speak("Trap and Trace active. Initiating target tracking routine.");
+    } else {
+      setState(() {
+        _operationStatusTitle = "Command Received";
+        _operationStatusBody = "Processing operation: '$command'";
       });
     }
+  }
+
+  void _executeFeatureAction(String featureName) {
+    setState(() {
+      _operationStatusTitle = "$featureName DECK";
+      _operationStatusBody = "Opening secure local module for $featureName. Zero network lag.";
+    });
+    _tts.speak("Opening $featureName module.");
   }
 
   @override
@@ -146,60 +108,50 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Gold Sheriff Star Emblem
+                // Gold Star Insignia
                 const Icon(Icons.star, color: Color(0xFFD4AF37), size: 80),
                 const SizedBox(height: 10),
 
-                // Main Master Heading
+                // TACNET Heading
                 const Text(
-                  "VIRGINIA INSTANT\nCODE ASSISTANT",
+                  "TACNET",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFFD4AF37),
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                  ),
+                  style: TextStyle(color: Color(0xFFD4AF37), fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: 2.0),
                 ),
-                const SizedBox(height: 5),
                 const Text(
-                  "Criminal, Traffic, Game-Fish, Juvenile/Domestic Laws",
+                  "Tactical Search & Signal Operations Management",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 13, fontStyle: FontStyle.italic),
                 ),
                 const SizedBox(height: 20),
 
-                // Live Results Screen Box
+                // Dynamic Live Status Display Screen
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F2415),
+                    color: const Color(0xFF101F30), // Dark Navy Box
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: const Color(0xFFD4AF37), width: 1.5),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _searchResultTitle,
-                        style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 20, fontWeight: FontWeight.bold),
+                      Row(
+                        children: [
+                          const Icon(Icons.radar, color: Colors.red, size: 20),
+                          const SizedBox(width: 8),
+                          Text(_operationStatusTitle, style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 18, fontWeight: FontWeight.bold)),
+                        ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        _searchResultBody,
-                        style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.4),
-                      ),
+                      Text(_operationStatusBody, style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.4)),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                // Central Voice Command Interface Deck
+                // Hands-Free Microphone Activation Hub
                 Center(
                   child: GestureDetector(
                     onTap: _toggleVoiceActivation,
@@ -207,7 +159,7 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
                       width: 130,
                       height: 130,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF142B1A),
+                        color: const Color(0xFF162A3F),
                         shape: BoxShape.circle,
                         border: Border.all(color: const Color(0xFFD4AF37), width: 3),
                       ),
@@ -224,47 +176,32 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-
-                // The Four Custom Functional Division Buttons
-                _buildCategoryCard("CRIMINAL", "e.g., 'Search Virginia Code Title 18.2'", Icons.lock_outline),
-                _buildCategoryCard("TRAFFIC", "e.g., 'Search Virginia Code Title 46.2'", Icons.directions_car_filled_outlined),
-                _buildCategoryCard("GAME-FISH", "e.g., 'Search Virginia Code Title 29.1'", Icons.waves_outlined),
-                _buildCategoryCard("JUVENILE DOMESTIC RELATIONS", "e.g., 'Search Domestic & Family Law Codes'", Icons.child_care_outlined),
                 const SizedBox(height: 25),
 
-                // State Database Synchronization Light Panel
+                // MODULE CARDS - Number One Feature Positioned Top Left
+                _buildModuleCard("TRAP & TRACE", "Cellular tracking, line routing, and signal trace sweeps.", Icons.gps_fixed, isPremium: true),
+                _buildModuleCard("SEARCH OPERATIONS", "K9 deployment logs, grid tracking, and wilderness paths.", Icons.search),
+                _buildModuleCard("TACTICAL MAPPING", "Offline coordinates, waypoint marking, and grid maps.", Icons.map_outlined),
+                _buildModuleCard("CIVIL ENCOUNTERS", "Secure local database storage for field logs.", Icons.assignment_outlined),
+                const SizedBox(height: 25),
+
+                // Secure Local Lock Light Indicator
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("GLO", style: TextStyle(color: Colors.white38, fontSize: 11)),
+                    const Icon(Icons.shield, color: Colors.green, size: 16),
                     const SizedBox(width: 6),
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: _isDbConnected ? Colors.red : Colors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    const Text("STATE DB CONNECTED", style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
+                    const Text("LOCAL DATA INTEGRITY SECURED", style: TextStyle(color: Colors.green, fontSize: 11, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 15),
 
-                // Official Retirement & Creator Attribution Footer
-                const Divider(color: Color(0xFF142B1A), thickness: 1),
+                const Divider(color: Color(0xFF162A3F), thickness: 1),
                 const SizedBox(height: 5),
                 const Text(
                   "ALL RIGHTS RESERVED.\nAPP CREATED BY DEPUTY SHERIFF EARL A. WOOD\nRETIRED VIRGINIA!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFFD4AF37),
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
-                  ),
+                  style: TextStyle(color: Color(0xFFD4AF37), fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.0),
                 ),
               ],
             ),
@@ -274,16 +211,19 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
     );
   }
 
-  Widget _buildCategoryCard(String title, String subtitle, IconData icon) {
+  Widget _buildModuleCard(String title, String subtitle, IconData icon, {bool isPremium = false}) {
     return GestureDetector(
-      onTap: () => _executeLawLookup(title),
+      onTap: () => _executeFeatureAction(title),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6.0),
         padding: const EdgeInsets.all(14.0),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F2415),
+          color: const Color(0xFF101F30),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFF1A3D24), width: 1.5),
+          border: Border.all(
+            color: isPremium ? const Color(0xFFD4AF37) : const Color(0xFF1C354E), 
+            width: isPremium ? 2.0 : 1.5
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.between,
@@ -292,7 +232,19 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 18, fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      Text(title, style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 18, fontWeight: FontWeight.bold)),
+                      if (isPremium) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(color: const Color(0xFFD4AF37), borderRadius: BorderRadius.circular(4)),
+                          child: const Text("P-1", style: TextStyle(color: Colors.black, fontSize: 9, fontWeight: FontWeight.bold)),
+                        )
+                      ]
+                    ],
+                  ),
                   const SizedBox(height: 3),
                   Text(subtitle, style: const TextStyle(color: Colors.white60, fontSize: 12)),
                 ],
