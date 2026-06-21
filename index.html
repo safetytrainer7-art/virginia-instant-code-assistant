@@ -169,26 +169,20 @@
     </div>
 
     <script>
-        // Automatic image tester to lock down the background filename on bootup
+        // Appends a cache-buster timestamp to break any blank mobile memory locks
         window.addEventListener('load', () => {
             const backdrop = document.getElementById('lexBackdrop');
-            const testImages = ['gggg.jpg', 'gggg.JPG', 'Screensho.jpg', 'Screensho.JPG'];
+            const cacheBuster = "?v=" + new Date().getTime();
             
-            function tryLoadImage(index) {
-                if (index >= testImages.length) {
-                    console.log("No matching background file resolved.");
-                    return;
-                }
-                const img = new Image();
-                img.onload = () => {
-                    backdrop.style.backgroundImage = `url('${testImages[index]}')`;
-                };
-                img.onerror = () => {
-                    tryLoadImage(index + 1); // Try the next backup filename
-                };
-                img.src = testImages[index];
-            }
-            tryLoadImage(0);
+            const img = new Image();
+            img.onload = () => {
+                backdrop.style.backgroundImage = `url('gggg.jpg${cacheBuster}')`;
+            };
+            img.onerror = () => {
+                // If it fails, checks uppercase filename configuration automatically
+                backdrop.style.backgroundImage = `url('gggg.JPG${cacheBuster}')`;
+            };
+            img.src = 'gggg.jpg';
         });
 
         const vaStatuteDatabase = {
@@ -220,7 +214,7 @@
                 return;
             }
 
-            const recognition = new SpeechRecognition();
+            const recognition = new Recognition();
             recognition.lang = 'en-US';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
