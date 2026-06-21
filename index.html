@@ -57,10 +57,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #22c55e;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             padding: 0.4rem 1rem;
             border-radius: 20px;
-            border: 1px solid rgba(234, 179, 8, 0.4);
+            border: 1px solid rgba(234, 179, 8, 0.5);
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             pointer-events: none;
             text-align: center;
@@ -153,7 +153,7 @@
             line-height: 1.4;
             color: #cbd5e1;
             margin-bottom: 1rem;
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
             background: rgba(0,0,0,0.3);
             padding: 0.5rem;
@@ -171,27 +171,12 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
-        /* KEY CONFIGURATION FLOATING UTILITY */
-        .key-config-trigger {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            z-index: 90;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #64748b;
-            font-size: 0.65rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
 
     <div class="lex-master-frame">
-        <div id="lexStatus" class="lex-top-status">🎙️ Tactical Standby Active</div>
+        <div id="lexStatus" class="lex-top-status">🎙️ SYSTEM STANDBY</div>
 
         <div id="lexBackdrop" class="lex-backdrop-wrapper">
             
@@ -205,8 +190,6 @@
             <button class="mic-hotspot-btn" onclick="activateVoiceSearchEngine('all', '')" title="All Divisions Voice Activation"></button>
 
         </div>
-        
-        <button class="key-config-trigger" onclick="promptUserForApiKey(true)">Update LIS Credentials</button>
     </div>
 
     <div id="lexPopup" class="lex-popup-overlay">
@@ -218,9 +201,7 @@
     </div>
 
     <script>
-        let LIS_API_KEY = "";
-
-        // Secure client-side credential locker execution
+        // High-precision image loader configuration
         window.addEventListener('load', () => {
             const backdrop = document.getElementById('lexBackdrop');
             const cacheBuster = "?v=" + new Date().getTime();
@@ -229,27 +210,16 @@
             img.onload = () => { backdrop.style.backgroundImage = `url('gggg.png${cacheBuster}')`; };
             img.onerror = () => { backdrop.style.backgroundImage = `url('gggg.PNG${cacheBuster}')`; };
             img.src = 'gggg.png';
-
-            // Silently initializes saved configuration
-            LIS_API_KEY = localStorage.getItem('VA_LIS_KEY') || "";
         });
 
-        function promptUserForApiKey(forceReconfigure = false) {
-            const statusBox = document.getElementById('lexStatus');
-            let savedKey = localStorage.getItem('VA_LIS_KEY');
-
-            let inputKey = prompt("VA LIS SECURE PORTAL:\nEnter or update your Virginia LIS Database API Key below for deep server lookups:", savedKey || "");
-            if (inputKey) {
-                localStorage.setItem('VA_LIS_KEY', inputKey);
-                LIS_API_KEY = inputKey;
-                statusBox.innerText = "🎙️ LIS Credentials Secured";
-                statusBox.style.color = "#22c55e";
-            }
-        }
-
-        // TACTICAL CORE LOCAL HOT-CACHE DATABASE
-        // Fires with 0.0 seconds latency, completely offline, zero state server dependency
+        // MAXIMUM CAPACITY TACTICAL SYSTEM CACHE
+        // 100% Offline, Zero Network Lag, Direct Match Configuration
         const tacticalLocalCache = {
+            "intoxicated": {
+                SectionNumber: "§ 18.2-266",
+                SectionTitle: "Driving motor vehicle while intoxicated (DUI / DWI)",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle, engine or train while such person has a blood alcohol concentration of 0.08 percent or more, or while under the influence of alcohol, any narcotic drug, or any other self-administered intoxicant which impairs their ability to operate safely. Violation is an absolute Class 1 Misdemeanor."
+            },
             "driving while intoxicated": {
                 SectionNumber: "§ 18.2-266",
                 SectionTitle: "Driving motor vehicle while intoxicated",
@@ -314,14 +284,14 @@
 
         function targetCategoryVoiceEngine(categoryName, vaTitleNumber) {
             const statusBox = document.getElementById('lexStatus');
-            statusBox.innerText = `🎙️ Title ${vaTitleNumber} Locked`;
+            statusBox.innerText = `🎙️ TITLE ${vaTitleNumber} LOCKED`;
             statusBox.style.color = "#eab308";
             
-            speakVerbalResponse(`Locked to Title ${vaTitleNumber}. State keyword command.`);
+            speakVerbalResponse(`Title ${vaTitleNumber} active. State keyword.`);
             
             setTimeout(() => {
                 activateVoiceSearchEngine(categoryName, vaTitleNumber);
-            }, 1300);
+            }, 1200);
         }
 
         function activateVoiceSearchEngine(categoryFilter, titleConstraint) {
@@ -330,7 +300,7 @@
             
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                statusBox.innerText = "❌ Speech Systems Blocked";
+                statusBox.innerText = "❌ Speech Blocked";
                 statusBox.style.color = "#ef4444";
                 return;
             }
@@ -341,91 +311,55 @@
             recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
-                statusBox.innerText = categoryFilter === 'all' ? "🎙️ Listening (All Titles)..." : `🎙️ Listening (Title ${titleConstraint})...`;
+                statusBox.innerText = categoryFilter === 'all' ? "🎙️ LISTENING..." : `🎙️ LISTENING TITLE ${titleConstraint}...`;
                 statusBox.style.color = "#38bdf8";
             };
 
             recognition.onerror = () => {
-                statusBox.innerText = "🎙️ System Standby";
+                statusBox.innerText = "🎙️ SYSTEM STANDBY";
                 statusBox.style.color = "#22c55e";
             };
 
             recognition.onresult = (event) => {
                 const spokenText = event.results[0][0].transcript.toLowerCase().trim();
-                statusBox.innerText = `Analyzing: "${spokenText}"`;
+                statusBox.innerText = `ANALYZING: "${spokenText}"`;
                 statusBox.style.color = "#eab308";
                 
-                // HIGH-SPEED LOCAL INTERCEPT RUNTIME PATTERN
-                let cacheHit = false;
+                // HIGH-SPEED INSTANT SYSTEM SCAN
+                let matchFound = false;
                 for (let cachedKeyword in tacticalLocalCache) {
                     if (spokenText.includes(cachedKeyword)) {
-                        statusBox.innerText = "⚡ Instant Cache Hit";
-                        statusBox.style.color = "#22c55e";
                         displayLiveStatuteResult(tacticalLocalCache[cachedKeyword]);
-                        cacheHit = true;
+                        matchFound = true;
                         break;
                     }
                 }
 
-                // Fallback to Live Remote Database Server ONLY if not found locally
-                if (!cacheHit) {
-                    statusBox.innerText = "🛰️ Pulling Remote LIS...";
-                    queryVirginiaLegislativeDatabase(spokenText, titleConstraint);
+                if (!matchFound) {
+                    setTimeout(() => {
+                        statusBox.innerText = "🎙️ SYSTEM STANDBY";
+                        statusBox.style.color = "#22c55e";
+                        speakVerbalResponse(`No matching entry found in local cache database for ${spokenText}.`);
+                    }, 1000);
                 }
             };
 
             recognition.start();
         }
 
-        function queryVirginiaLegislativeDatabase(searchKeyword, titleConstraint) {
-            const statusBox = document.getElementById('lexStatus');
-            
-            if (!LIS_API_KEY) {
-                statusBox.innerText = "🎙️ Standby (Offline Mode Only)";
-                speakVerbalResponse(`No local cache match for ${searchKeyword}. Secure LIS server key is unconfigured.`);
-                return;
-            }
-
-            const rawEndpoint = `https://law.lis.virginia.gov/api/getcodecombosearch/${encodeURIComponent(searchKeyword)}?title=${titleConstraint}&key=${LIS_API_KEY}`;
-            const proxyInterceptorEndpoint = `https://api.allorigins.win/get?url=${encodeURIComponent(rawEndpoint)}`;
-
-            // Setting up a strict 4-second timeout monitor for field tracking stability
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-            fetch(proxyInterceptorEndpoint, { signal: controller.signal })
-                .then(response => {
-                    clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error("API Connection Rejected");
-                    return response.json();
-                })
-                .then(wrapper => {
-                    const data = JSON.parse(wrapper.contents);
-                    if (data && data.length > 0) {
-                        displayLiveStatuteResult(data[0]);
-                    } else {
-                        statusBox.innerText = "🎙️ System Standby";
-                        statusBox.style.color = "#22c55e";
-                        speakVerbalResponse(`No direct legislative results found for ${searchKeyword}.`);
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    statusBox.innerText = "🎙️ Standby (Cache Mode)";
-                    statusBox.style.color = "#22c55e";
-                    speakVerbalResponse(`Search string context unparsed.`);
-                });
-        }
-
         function displayLiveStatuteResult(record) {
+            const statusBox = document.getElementById('lexStatus');
+            statusBox.innerText = "⚡ RECORD RETRIEVED";
+            statusBox.style.color = "#22c55e";
+
             const sectionNumber = record.SectionNumber || "Live Code";
             const sectionTitle = record.SectionTitle || "Statutory Record";
             const lawBodyText = record.SectionText || "No body text returned.";
 
             document.getElementById('lexPopupTitle').innerText = `${sectionNumber}`;
             document.getElementById('lexPopupContent').innerHTML = `
-                <p style="margin-bottom: 0.5rem; color:#eab308;"><b>Title Description:</b> ${sectionTitle}</p>
-                <p style="font-size:0.8rem; line-height:1.4;"><b>Live Statute Language:</b> ${lawBodyText}</p>
+                <p style="margin-bottom: 0.5rem; color:#eab308; font-weight:bold;">${sectionTitle}</p>
+                <p style="font-size:0.85rem; line-height:1.4; color:#cbd5e1;">${lawBodyText}</p>
             `;
             document.getElementById('lexPopup').style.display = 'flex';
             
@@ -435,22 +369,15 @@
 
         function cleanLegalTextForSpeech(number, title, text) {
             let clean = `Virginia Code Section ${number.replace(/§/g, '').trim()}. ${title}. `;
-            
-            let tempDiv = document.createElement("div");
-            tempDiv.innerHTML = text;
-            let targetText = tempDiv.textContent || tempDiv.innerText || "";
-
-            targetText = targetText.replace(/subdiv\./gi, "subdivision");
-            targetText = targetText.replace(/para\./gi, "paragraph");
-            targetText = targetText.replace(/va\./gi, "Virginia");
+            let targetText = text.replace(/subdiv\./gi, "subdivision")
+                                 .replace(/para\./gi, "paragraph")
+                                 .replace(/va\./gi, "Virginia");
             
             targetText = targetText.replace(/\(([a-zA-Z0-9]+)\)/g, (match, group) => {
                 return `, sub section ${group.toUpperCase()}, `;
             });
 
             targetText = targetText.replace(/[\/\#\$\%\^\&\*\{\}\[\]\<\>\-\_\=\+\~]/g, " ");
-            targetText = targetText.replace(/\s+/g, " ");
-
             clean += targetText;
             return clean;
         }
@@ -476,11 +403,19 @@
             speakNextClause();
         }
 
-        function closeLexPopupDisplay() {
+        function mergeCacheExtensions(customKey, payloadObject) {
+            tacticalLocalCache[customKey.toLowerCase().trim()] = payloadObject;
+        }
+
+        function windowResetMatrix() {
             window.speechSynthesis.cancel();
             document.getElementById('lexPopup').style.display = 'none';
-            document.getElementById('lexStatus').innerText = "🎙️ System Standby";
+            document.getElementById('lexStatus').innerText = "🎙️ SYSTEM STANDBY";
             document.getElementById('lexStatus').style.color = "#22c55e";
+        }
+
+        function closeLexPopupDisplay() {
+            windowResetMatrix();
         }
     </script>
 </body>
