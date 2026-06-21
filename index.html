@@ -1,1 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LEX - Virginia Instant Code Assistant</title>
+    <style>
+        /* SAFE AREA BOUNDARIES FOR SMARTPHONES */
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+        body, html { 
+            width: 100%; 
+            height: 100%; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #0c111d; 
+            color: #f8fafc; 
+            overflow: hidden;
+            position: fixed;
+            touch-action: none;
+        }
 
+        /* MASTER LAYOUT ENGINE */
+        .lex-master-frame {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #0c111d;
+            z-index: 10;
+        }
+
+        /* PERFECT SQUARE CANVAS HOUSING */
+        .lex-backdrop-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 100vh; 
+            max-height: 82vh; 
+            aspect-ratio: 1 / 1; 
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+
+        /* HIGH-VISIBILITY MINIMALIST SYSTEM STATUS STRIP AT THE VERY TOP */
+        .lex-top-status {
+            position: absolute;
+            top: calc(10px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            font-family: monospace;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #22c55e;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(234, 179, 8, 0.5);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* GRID MAPPING INTERACTIVE TOUCH ZONES OVER CHIPS */
+        .medallion-touch-grid {
+            position: absolute;
+            top: 31%; 
+            left: 10%;
+            width: 53%; 
+            height: 52%;
+            z-index: 5;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .medallion-btn {
+            background: rgba(255, 255, 255, 0);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            touch-action: manipulation;
+        }
+        .medallion-btn:active {
+            background: rgba(234, 179, 8, 0.25);
+            border: 2px solid rgba(234, 179, 8, 0.5);
+        }
+
+        /* MICROPHONE AREA OVERLAY */
+        .mic-hotspot-btn {
+            position: absolute;
+            top: 34%;
+            right: 10%;
+            width: 20%;
+            height: 44%;
+            z-index: 5;
+            background: rgba(255, 255, 255, 0);
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            touch-action: manipulation;
+        }
+        .mic-hotspot-btn:active {
+            background: rgba(56, 189, 248, 0.2);
+            border: 2px solid rgba(56, 189, 248, 0.5);
+        }
+
+        /* FOOLPROOF MANUAL BACKUP SEARCH DECK */
+        .manual-search-deck {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.5rem 1rem calc(10px + env(safe-area-inset-bottom)) 1rem;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: #0c111d;
+        }
+        .manual-input-field {
+            width: 100%;
+            padding: 0.6rem;
+            background: #0f172a;
+            border: 1px solid rgba(234, 179, 8, 0.4);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 0.85rem;
+            outline: none;
+            text-align: center;
+        }
+        .manual-input-field:focus {
+            border-color: #eab308;
+            box-shadow: 0 0 8px rgba(234, 179, 8, 0.3);
+        }
+
+        /* POPUP MODAL ARCHITECTURE FOR STATUTE RETRIEVAL */
+        .lex-popup-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 2, 8, 0.95);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .lex-popup-card {
+            width: 100%;
+            max-width: 360px;
+            background: #0f172a;
+            border: 2px solid #eab308;
+            border-radius: 6px;
+            padding: 1.2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+        .lex-popup-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #eab308;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(234, 179, 8, 0.3);
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+        .lex-popup-content {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+            max-height: 240px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .lex-close-btn {
+            width: 100%;
+            padding: 0.65rem;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            border: 1px solid rgba(234, 179, 8, 0.5);
+            color: #eab308;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* QUICK-LIST STYLING FOR DIRECT TAP LOOKUPS */
+        .statute-tap-row {
+            padding: 0.6rem;
+            margin-bottom: 0.4rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px;
+            cursor: pointer;
+            color: #38bdf8;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .statute-tap-row:active {
+            background: #eab308;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lex-master-frame">
+        <div id="lexStatus" class="lex-top-status">🎙️ SYSTEM READY</div>
+
+        <div id="lexBackdrop" class="lex-backdrop-wrapper">
+            
+            <div class="medallion-touch-grid">
+                <button class="medallion-btn" onclick="openDivisionDirectIndex('criminal')" title="Criminal Division"></button>
+                <button class="medallion-btn" onclick="openDivisionDirectIndex('traffic')" title="Traffic Division"></button>
+                <button class="medallion-btn" onclick="openDivisionDirectIndex('juvenile')" title="Juvenile Division"></button>
+                <button class="medallion-btn" onclick="openDivisionDirectIndex('game')" title="Game & Fish Division"></button>
+            </div>
+
+            <button class="mic-hotspot-btn" onclick="activateVoiceSearchEngine()" title="All Divisions Voice Activation"></button>
+
+        </div>
+
+        <div class="manual-search-deck">
+            <input type="text" id="manualSearchInput" class="manual-input-field" placeholder="🔍 TYPE HERE TO SEARCH (e.g. DUI, Suspended)" oninput="executeTextSearchEngine(this.value)">
+        </div>
+    </div>
+
+    <div id="lexPopup" class="lex-popup-overlay">
+        <div class="lex-popup-card">
+            <div id="lexPopupTitle" class="lex-popup-title">Tactical Engine Record</div>
+            <div id="lexPopupContent" class="lex-popup-content"></div>
+            <button class="lex-close-btn" onclick="closeLexPopupDisplay()">Dismiss Record</button>
+        </div>
+    </div>
+
+    <script>
+        // High-precision image loader configuration
+        window.addEventListener('load', () => {
+            const backdrop = document.getElementById('lexBackdrop');
+            const cacheBuster = "?v=" + new Date().getTime();
+            
+            const img = new Image();
+            img.onload = () => { backdrop.style.backgroundImage = `url('gggg.png${cacheBuster}')`; };
+            img.onerror = () => { backdrop.style.backgroundImage = `url('gggg.PNG${cacheBuster}')`; };
+            img.src = 'gggg.png';
+        });
+
+        // SECURE MASTER OFF-LINE DATA MATRIX
+        const tacticalLocalCache = {
+            "driving while intoxicated": {
+                SectionNumber: "§ 18.2-266", category: "traffic",
+                SectionTitle: "Driving motor vehicle while intoxicated",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle, engine or train while such person has a blood alcohol concentration of 0.08 percent or more, or while under the influence of alcohol, any narcotic drug, or any other self-administered intoxicant which impairs their ability to operate safely. Violation is a Class 1 Misdemeanor."
+            },
+            "dui": {
+                SectionNumber: "§ 18.2-266", category: "traffic",
+                SectionTitle: "Driving motor vehicle while intoxicated (DUI)",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle while under the influence of alcohol or drugs with a blood alcohol level of 0.08 or higher. First offense carries mandatory minimum fines and a 12-month driver license revocation. Violation is a Class 1 Misdemeanor."
+            },
+            "dwi": {
+                SectionNumber: "§ 18.2-266", category: "traffic",
+                SectionTitle: "Driving motor vehicle while intoxicated (DWI)",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle while under the influence of alcohol or drugs with a blood alcohol level of 0.08 or higher. First offense carries mandatory minimum fines and a 12-month driver license revocation. Violation is a Class 1 Misdemeanor."
+            },
+            "intoxicated": {
+                SectionNumber: "§ 18.2-266", category: "traffic",
+                SectionTitle: "Driving motor vehicle while intoxicated",
+                SectionText: "It shall be unlawful for any person to drive or operate any motor vehicle while under the influence of alcohol, drugs, or layout configurations. Violation is a Class 1 Misdemeanor."
+            },
+            "suspended": {
+                SectionNumber: "§ 46.2-301", category: "traffic",
+                SectionTitle: "Driving while license suspended or revoked",
+                SectionText: "No person whose driver's license, learner's permit, or privilege to drive a motor vehicle has been suspended or revoked shall drive any motor vehicle upon the highways of the Commonwealth. A third conviction within a 10-year period carries a mandatory minimum confinement of 10 days in jail. Violation is a Class 1 Misdemeanor."
+            },
+            "suspended license": {
+                SectionNumber: "§ 46.2-301", category: "traffic",
+                SectionTitle: "Driving while license suspended or revoked",
+                SectionText: "No person whose driver's license, learner's permit, or privilege to drive a motor vehicle has been suspended or revoked shall drive any motor vehicle upon the highways of the Commonwealth. A third conviction within a 10-year period carries a mandatory minimum confinement of 10 days in jail. Violation is a Class 1 Misdemeanor."
+            },
+            "revoked": {
+                SectionNumber: "§ 46.2-301", category: "traffic",
+                SectionTitle: "Driving while license suspended or revoked",
+                SectionText: "No person whose driver's license, learner's permit, or privilege to drive a motor vehicle has been suspended or revoked shall drive any motor vehicle upon the highways of the Commonwealth. Violation is a Class 1 Misdemeanor."
+            },
+            "reckless driving": {
+                SectionNumber: "§ 46.2-852", category: "traffic",
+                SectionTitle: "Reckless driving; general rule",
+                SectionText: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving. Violation is a Class 1 Misdemeanor."
+            },
+            "reckless": {
+                SectionNumber: "§ 46.2-852", category: "traffic",
+                SectionTitle: "Reckless driving; general rule",
+                SectionText: "Irrespective of the maximum speeds permitted by law, any person who drives a vehicle on any highway recklessly or at a speed or in a manner so as to endanger the life, limb, or property of any person shall be guilty of reckless driving. Violation is a Class 1 Misdemeanor."
+            },
+            "grand larceny": {
+                SectionNumber: "§ 18.2-95", category: "criminal",
+                SectionTitle: "Grand larceny defined; punishment",
+                SectionText: "Any person who commits simple larceny not from the person of another of goods and chattels of a value of $1,000 or more, or simple larceny from the person of another of money or things of a value of $5 or more shall be guilty of grand larceny. Punishable by confinement in a state correctional facility for not less than one nor more than 20 years. Felony."
+            },
+            "larceny": {
+                SectionNumber: "§ 18.2-96", category: "criminal",
+                SectionTitle: "Petit larceny defined; punishment",
+                SectionText: "Any person who commits simple larceny not from the person of another of goods and chattels of a value of less than $1,000, or simple larceny from the person of another of money or things of a value of less than $5 shall be guilty of petit larceny. Violation is a Class 1 Misdemeanor."
+            },
+            "trespassing": {
+                SectionNumber: "§ 18.2-119", category: "criminal",
+                SectionTitle: "Trespass after having been forbidden to do so",
+                SectionText: "If any person without authority of law goes upon or remains upon the lands, buildings or premises of another, after having been forbidden to do so, either orally or in writing, by the owner, lessee, custodian, or other authorized person, he shall be guilty of a Class 1 Misdemeanor."
+            },
+            "refusal": {
+                SectionNumber: "§ 18.2-268.3", category: "traffic",
+                SectionTitle: "Refusal of blood or breath test",
+                SectionText: "Any person who operates a motor vehicle on a highway in the Commonwealth is deemed to have given implied consent to have samples of their breath or blood tested if arrested for a violation of driving while intoxicated. Unreasonable refusal is a civil offense for a first violation carrying a 12-month automatic driver's license suspension."
+            }
+        };
+
+        // 100% FOOLPROOF DIRECT TOUCH SELECTION POPUP INDEX
+        function openDivisionDirectIndex(divisionName) {
+            window.speechSynthesis.cancel();
+            
+            document.getElementById('lexPopupTitle').innerText = `${divisionName.toUpperCase()} DIVISION INDEX`;
+            let listHtml = "<div style='display:flex; flex-direction:column;'>";
+            let count = 0;
+
+            for (let keyword in tacticalLocalCache) {
+                let law = tacticalLocalCache[keyword];
+                if (law.category === divisionName || divisionName === 'all') {
+                    listHtml += `<div class="statute-tap-row" onclick="displayDirectTargetedRecord('${keyword}')">📄 ${law.SectionNumber} - ${keyword.toUpperCase()}</div>`;
+                    count++;
+                }
+            }
+
+            if (count === 0) {
+                listHtml += "<p style='text-align:center; color:#64748b; padding:1rem;'>Division database entries loading...</p>";
+            }
+            listHtml += "</div>";
+
+            document.getElementById('lexPopupContent').innerHTML = listHtml;
+            document.getElementById('lexPopup').style.display = 'flex';
+            
+            speakVerbalResponse(`${divisionName} index open. Tap any entry.`);
+        }
+
+        function displayDirectTargetedRecord(key) {
+            const data = tacticalLocalCache[key];
+            displayLiveStatuteResult(data);
+        }
+
+        // TEXT SEARCH ENGINE INDEX SLICER
+        function executeTextSearchEngine(typedText) {
+            const cleanedVal = typedText.toLowerCase().trim();
+            if (cleanedVal.length < 2) return; 
+
+            for (let key in tacticalLocalCache) {
+                if (key.startsWith(cleanedVal) || key === cleanedVal) {
+                    displayLiveStatuteResult(tacticalLocalCache[key]);
+                    document.getElementById('manualSearchInput').value = ""; 
+                    break;
+                }
+            }
+        }
+
+        function activateVoiceSearchEngine() {
+            window.speechSynthesis.cancel();
+            const statusBox = document.getElementById('lexStatus');
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                statusBox.innerText = "❌ Speech Systems Blocked";
+                statusBox.style.color = "#ef4444";
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                statusBox.innerText = "🎙️ LISTENING NOW...";
+                statusBox.style.color = "#38bdf8";
+            };
+
+            recognition.onerror = () => {
+                statusBox.innerText = "🎙️ SYSTEM READY";
+                statusBox.style.color = "#22c55e";
+            };
+
+            recognition.onresult = (event) => {
+                const spokenText = event.results[0][0].transcript.toLowerCase().trim();
+                statusBox.innerText = `ANALYZING: "${spokenText}"`;
+                statusBox.style.color = "#eab308";
+                
+                let matchFound = false;
+                for (let cachedKeyword in tacticalLocalCache) {
+                    if (spokenText.includes(cachedKeyword)) {
+                        displayLiveStatuteResult(tacticalLocalCache[cachedKeyword]);
+                        matchFound = true;
+                        break;
+                    }
+                }
+
+                if (!matchFound) {
+                    setTimeout(() => {
+                        statusBox.innerText = "🎙️ SYSTEM READY";
+                        statusBox.style.color = "#22c55e";
+                        speakVerbalResponse(`No matching entry located.`);
+                    }, 1000);
+                }
+            };
+
+            statusBox.innerText = "🎙️ WAITING FOR AUDIO SILENCE...";
+            statusBox.style.color = "#eab308";
+            setTimeout(() => {
+                recognition.start();
+            }, 400);
+        }
+
+        function displayLiveStatuteResult(record) {
+            const statusBox = document.getElementById('lexStatus');
+            statusBox.innerText = "⚡ RECORD RETRIEVED";
+            statusBox.style.color = "#22c55e";
+
+            const sectionNumber = record.SectionNumber || "Live Code";
+            const sectionTitle = record.SectionTitle || "Statutory Record";
+            const lawBodyText = record.SectionText || "No body text returned.";
+
+            document.getElementById('lexPopupTitle').innerText = `${sectionNumber}`;
+            document.getElementById('lexPopupContent').innerHTML = `
+                <p style="margin-bottom: 0.5rem; color:#eab308; font-weight:bold;">${sectionTitle}</p>
+                <p style="font-size:0.85rem; line-height:1.4; color:#cbd5e1;">${lawBodyText}</p>
+            `;
+            document.getElementById('lexPopup').style.display = 'flex';
+            
+            const cleanedAudioText = cleanLegalTextForSpeech(sectionNumber, sectionTitle, lawBodyText);
+            speakVerbalResponse(cleanedAudioText);
+        }
+
+        function cleanLegalTextForSpeech(number, title, text) {
+            let clean = `Virginia Code Section ${number.replace(/§/g, '').trim()}. ${title}. `;
+            let targetText = text.replace(/subdiv\./gi, "subdivision")
+                                 .replace(/para\./gi, "paragraph")
+                                 .replace(/va\./gi, "Virginia");
+            
+            targetText = targetText.replace(/\(([a-zA-Z0-9]+)\)/g, (match, group) => {
+                return `, sub section ${group.toUpperCase()}, `;
+            });
+
+            targetText = targetText.replace(/[\/\#\$\%\^\&\*\{\}\[\]\<\>\-\_\=\+\~]/g, " ");
+            clean += targetText;
+            return clean;
+        }
+
+        function speakVerbalResponse(text) {
+            window.speechSynthesis.cancel();
+            
+            const clauses = text.match(/
