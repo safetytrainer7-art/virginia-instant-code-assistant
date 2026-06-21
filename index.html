@@ -191,13 +191,10 @@
 <body>
 
     <div class="lex-master-frame">
-        <!-- TOP INDICATOR PANEL CHIP STRIP -->
         <div id="lexStatus" class="lex-top-status">🎙️ System Standby</div>
 
-        <!-- SACRED SQUARE CONTAINER BACKGROUND IMAGE -->
         <div id="lexBackdrop" class="lex-backdrop-wrapper">
             
-            <!-- TRANSPARENT HIGH-PERFORMANCE TOUCH TARGET HOVER BUTTONS -->
             <div class="medallion-touch-grid">
                 <button class="medallion-btn" onclick="targetCategoryVoiceEngine('criminal', '18.2')" title="Criminal (Title 18.2)"></button>
                 <button class="medallion-btn" onclick="targetCategoryVoiceEngine('traffic', '46.2')" title="Traffic (Title 46.2)"></button>
@@ -205,12 +202,10 @@
                 <button class="medallion-btn" onclick="targetCategoryVoiceEngine('game', '29.1')" title="Game & Fish (Title 29.1)"></button>
             </div>
 
-            <!-- INVISIBLE MICROPHONE AREA HOTSPOT (ALL DIVISIONS OVERRIDE) -->
             <button class="mic-hotspot-btn" onclick="activateVoiceSearchEngine('all', '')" title="All Divisions Voice Activation"></button>
 
         </div>
         
-        <!-- SECRET KEY UTILITY RE-CONFIGURATOR -->
         <button class="key-config-trigger" onclick="promptUserForApiKey(true)">Update LIS Credentials</button>
     </div>
 
@@ -243,7 +238,7 @@
             let savedKey = localStorage.getItem('VA_LIS_KEY');
 
             if (!savedKey || forceReconfigure) {
-                let inputKey = prompt("VA LIS SECURE SETUP:\nPlease enter your required Virginia LIS Database API Key below:", savedKey || "");
+                let inputKey = prompt("VA LIS SECURE PORTAL:\nPlease enter your required Virginia LIS Database API Key below:", savedKey || "");
                 if (inputKey) {
                     localStorage.setItem('VA_LIS_KEY', inputKey);
                     LIS_API_KEY = inputKey;
@@ -300,7 +295,7 @@
 
             recognition.onresult = (event) => {
                 const spokenText = event.results[0][0].transcript.toLowerCase();
-                statusBox.innerText = `Searching: "${spokenText}"`;
+                statusBox.innerText = `Searching LIS: "${spokenText}"`;
                 statusBox.style.color = "#eab308";
                 
                 queryVirginiaLegislativeDatabase(spokenText, titleConstraint);
@@ -318,26 +313,35 @@
                 return;
             }
 
-            const targetEndpoint = `https://law.lis.virginia.gov/api/getcodecombosearch/${encodeURIComponent(searchKeyword)}?title=${titleConstraint}&key=${LIS_API_KEY}`;
+            // BASE TARGET API ENDPOINT ON LIS SERVER REGISTRY
+            const rawEndpoint = `https://law.lis.virginia.gov/api/getcodecombosearch/${encodeURIComponent(searchKeyword)}?title=${titleConstraint}&key=${LIS_API_KEY}`;
+            
+            // SECURE TACTICAL RELAY STATION PROXY INTERCEPTOR
+            // Wraps request in a verified corridor to instantly smash through the browser's CORS timeout block
+            const proxyInterceptorEndpoint = `https://api.allorigins.win/get?url=${encodeURIComponent(rawEndpoint)}`;
 
-            fetch(targetEndpoint)
+            fetch(proxyInterceptorEndpoint)
                 .then(response => {
-                    if (!response.ok) throw new Error("API Connection Rejected");
+                    if (!response.ok) throw new Error("Proxy Network Handshake Failure");
                     return response.json();
                 })
-                .then(data => {
+                .then(wrapper => {
+                    // AllOrigins packages responses inside a secure text '.contents' block
+                    const rawDataString = wrapper.contents;
+                    const data = JSON.parse(rawDataString);
+
                     if (data && data.length > 0) {
                         displayLiveStatuteResult(data[0]);
                     } else {
                         statusBox.innerText = "🎙️ System Standby";
                         statusBox.style.color = "#22c55e";
-                        speakVerbalResponse(`No direct matches found for ${searchKeyword}.`);
+                        speakVerbalResponse(`No direct legislative results found for ${searchKeyword}.`);
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    statusBox.innerText = "❌ Live LIS Timeout";
-                    speakVerbalResponse("Connection interface timeout.");
+                    statusBox.innerText = "❌ Connection Fault";
+                    speakVerbalResponse("Database interface error. Check server access availability.");
                 });
         }
 
@@ -353,35 +357,26 @@
             `;
             document.getElementById('lexPopup').style.display = 'flex';
             
-            // Clean the legal language so it reads beautifully without audio clipping
             const cleanedAudioText = cleanLegalTextForSpeech(sectionNumber, sectionTitle, lawBodyText);
             speakVerbalResponse(cleanedAudioText);
         }
 
-        // ADVANCED VOCAL CLEANING SCRUBBER ENGINE
         function cleanLegalTextForSpeech(number, title, text) {
-            // Step 1: Clean section marker symbols
             let clean = `Virginia Code Section ${number.replace(/§/g, '').trim()}. ${title}. `;
             
-            // Step 2: Extract text from any residual raw HTML brackets
             let tempDiv = document.createElement("div");
             tempDiv.innerHTML = text;
             let targetText = tempDiv.textContent || tempDiv.innerText || "";
 
-            // Step 3: Global abbreviation expansion updates
             targetText = targetText.replace(/subdiv\./gi, "subdivision");
             targetText = targetText.replace(/para\./gi, "paragraph");
             targetText = targetText.replace(/va\./gi, "Virginia");
             
-            // Step 4: Format code sublists so the reader voices them cleanly
             targetText = targetText.replace(/\(([a-zA-Z0-9]+)\)/g, (match, group) => {
                 return `, sub section ${group.toUpperCase()}, `;
             });
 
-            // Step 5: Strip remaining mechanical bracket clutter
             targetText = targetText.replace(/[\/\#\$\%\^\&\*\{\}\[\]\<\>\-\_\=\+\~]/g, " ");
-            
-            // Step 6: Collapse white space lines to construct fluid pauses
             targetText = targetText.replace(/\s+/g, " ");
 
             clean += targetText;
@@ -391,30 +386,21 @@
         function speakVerbalResponse(text) {
             window.speechSynthesis.cancel();
             
-            // Breaks the string chunk into controlled clauses to guarantee device memory stability
             const clauses = text.match(/[^.!?]+[.!?]*/g) || [text];
-            
             let clauseIndex = 0;
+            
             function speakNextClause() {
                 if (clauseIndex >= clauses.length) return;
                 
                 const utterance = new SpeechSynthesisUtterance(clauses[clauseIndex].trim());
-                utterance.rate = 0.98; // Adjusted pacing speed for clean cabin audio
+                utterance.rate = 0.98; 
                 utterance.pitch = 1.0;
                 
-                utterance.onend = () => {
-                    clauseIndex++;
-                    speakNextClause();
-                };
-                
-                utterance.onerror = () => {
-                    clauseIndex++;
-                    speakNextClause();
-                };
+                utterance.onend = () => { clauseIndex++; speakNextClause(); };
+                utterance.onerror = () => { clauseIndex++; speakNextClause(); };
 
                 window.speechSynthesis.speak(utterance);
             }
-            
             speakNextClause();
         }
 
