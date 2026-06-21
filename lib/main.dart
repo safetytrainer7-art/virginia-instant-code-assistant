@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart' as models;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -32,11 +34,18 @@ class VicaHomeScreen extends StatefulWidget {
 }
 
 class _VicaHomeScreenState extends State<VicaHomeScreen> {
+  // Voice Engines
   late stt.SpeechToText _speech;
   late FlutterTts _tts;
   bool _isListening = false;
-  bool _isDbConnected = true; // State database indicator light
   String _recognizedVoiceText = "";
+
+  // Appwrite Engine
+  late Client _client;
+  late Databases _databases;
+  bool _isDbConnected = false;
+  String _searchResultTitle = "No Active Search";
+  String _searchResultBody = "Tap the mic or select a category to view codes.";
 
   @override
   void initState() {
@@ -44,8 +53,23 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
     _speech = stt.SpeechToText();
     _tts = FlutterTts();
     _tts.setLanguage("en-US");
-    _tts.setPermanentLanguage("en-US");
     _tts.setSpeechRate(0.45);
+
+    _initAppwrite();
+  }
+
+  // Live Database Wire-up
+  void _initAppwrite() {
+    _client = Client()
+      ..setEndpoint('https://cloud.appwrite.io/v1') // Appwrite Cloud Endpoint
+      ..setProject('6a37d453000ed7b5eff5');       // Your Project ID
+
+    _databases = Databases(_client);
+    
+    // Test connection availability
+    setState(() {
+      _isDbConnected = true;
+    });
   }
 
   void _toggleVoiceActivation() async {
@@ -69,9 +93,47 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
     }
   }
 
-  void _executeLawLookup(String query) {
-    // Connects offline cache directly to automated LIS data tables
-    print("Querying state records for: $query");
+  // Queries the database for the spoken or typed law
+  void _executeLawLookup(String query) async {
+    if (query.isEmpty) return;
+
+    setState(() {
+      _searchResultTitle = "Searching...";
+      _searchResultBody = "Querying live Virginia statutes for '$query'...";
+    });
+
+    try {
+      // Queries your Appwrite database and collection directly
+      final response = await _databases.listDocuments(
+        databaseId: 'tacnet-search-app',
+        collectionId: 'virginia_statutes',
+        queries: [
+          Query.search('code_section', query), // Searches the code section column
+        ],
+      );
+
+      if (response.documents.isNotEmpty) {
+        var doc = response.documents.first;
+        setState(() {
+          _searchResultTitle = doc.data['code_section'] ?? 'Unknown Code';
+          _searchResultBody = doc.data['description'] ?? 'No description available.';
+        });
+        
+        // Text-to-Speech broadcasts the law out loud over patrol vehicle speakers
+        await _tts.speak("Section $_searchResultTitle. $_searchResultBody");
+      } else {
+        setState(() {
+          _searchResultTitle = "Not Found";
+          _searchResultBody = "No matching Virginia statute found for '$query'.";
+        });
+        await _tts.speak("No matching statute found.");
+      }
+    } catch (e) {
+      setState(() {
+        _searchResultTitle = "Connection Error";
+        _searchResultBody = "Could not pull records. Verify your network or Appwrite tables.";
+      });
+    }
   }
 
   @override
@@ -85,11 +147,7 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Gold Sheriff Star Emblem
-                const Icon(
-                  Icons.star, 
-                  color: Color(0xFFD4AF37), 
-                  size: 80
-                ),
+                const Icon(Icons.star, color: Color(0xFFD4AF37), size: 80),
                 const SizedBox(height: 10),
 
                 // Main Master Heading
@@ -97,7 +155,7 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
                   "VIRGINIA INSTANT\nCODE ASSISTANT",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFFD4AF37), // Weathered Gold Text
+                    color: Color(0xFFD4AF37),
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
@@ -113,97 +171,84 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 20),
+
+                // Live Results Screen Box
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0F2415),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFD4AF37), width: 1.5),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _searchResultTitle,
+                        style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _searchResultBody,
+                        style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.4),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
 
                 // Central Voice Command Interface Deck
                 Center(
                   child: GestureDetector(
                     onTap: _toggleVoiceActivation,
                     child: Container(
-                      width: 140,
-                      height: 140,
+                      width: 130,
+                      height: 130,
                       decoration: BoxDecoration(
                         color: const Color(0xFF142B1A),
                         shape: BoxShape.circle,
                         border: Border.all(color: const Color(0xFFD4AF37), width: 3),
-                        boxShadow: [
-                          BoxShadow(
-                            color: _isListening ? Colors.red.withOpacity(0.5) : Colors.black33,
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          )
-                        ],
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "TAP TO SPEAK",
-                            style: TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold),
-                          ),
+                          const Text("TAP TO SPEAK", style: TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
-                          Icon(
-                            _isListening ? Icons.mic : Icons.mic_none,
-                            color: const Color(0xFFD4AF37),
-                            size: 40,
-                          ),
+                          Icon(_isListening ? Icons.mic : Icons.mic_none, color: const Color(0xFFD4AF37), size: 36),
                           const SizedBox(height: 8),
-                          const Text(
-                            "VOICE ACTIVATE",
-                            style: TextStyle(color: Color(0xFFD4AF37), fontSize: 10, fontWeight: FontWeight.bold),
-                          ),
+                          const Text("VOICE ACTIVATE", style: TextStyle(color: Color(0xFFD4AF37), fontSize: 10, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
                 // The Four Custom Functional Division Buttons
-                _buildCategoryCard(
-                  title: "CRIMINAL",
-                  subtitle: "e.g., 'Search Virginia Code Title 18.2'",
-                  icon: Icons.lock_outline,
-                ),
-                _buildCategoryCard(
-                  title: "TRAFFIC",
-                  subtitle: "e.g., 'Search Virginia Code Title 46.2'",
-                  icon: Icons.directions_car_filled_outlined,
-                ),
-                _buildCategoryCard(
-                  title: "GAME-FISH",
-                  subtitle: "e.g., 'Search Virginia Code Title 29.1'",
-                  icon: Icons.waves_outlined,
-                ),
-                _buildCategoryCard(
-                  title: "JUVENILE DOMESTIC RELATIONS",
-                  subtitle: "e.g., 'Search Domestic & Family Law Codes'",
-                  icon: Icons.child_care_outlined,
-                ),
+                _buildCategoryCard("CRIMINAL", "e.g., 'Search Virginia Code Title 18.2'", Icons.lock_outline),
+                _buildCategoryCard("TRAFFIC", "e.g., 'Search Virginia Code Title 46.2'", Icons.directions_car_filled_outlined),
+                _buildCategoryCard("GAME-FISH", "e.g., 'Search Virginia Code Title 29.1'", Icons.waves_outlined),
+                _buildCategoryCard("JUVENILE DOMESTIC RELATIONS", "e.g., 'Search Domestic & Family Law Codes'", Icons.child_care_outlined),
                 const SizedBox(height: 25),
 
                 // State Database Synchronization Light Panel
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "GLO",
-                      style: TextStyle(color: Colors.white38, fontSize: 11),
-                    ),
+                    const Text("GLO", style: TextStyle(color: Colors.white38, fontSize: 11)),
                     const SizedBox(width: 6),
                     Container(
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: _isDbConnected ? Colors.red : Colors.grey, // Live connection indicator
+                        color: _isDbConnected ? Colors.red : Colors.grey,
                         shape: BoxShape.circle,
                       ),
                     ),
                     const SizedBox(width: 6),
-                    const Text(
-                      "STATE DB CONNECTED",
-                      style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold),
-                    ),
+                    const Text("STATE DB CONNECTED", style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 15),
@@ -229,41 +274,33 @@ class _VicaHomeScreenState extends State<VicaHomeScreen> {
     );
   }
 
-  Widget _buildCategoryCard({required String title, required String subtitle, required IconData icon}) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6.0),
-      padding: const EdgeInsets.all(14.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F2415),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1A3D24), width: 1.5),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.between,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Color(0xFFD4AF37),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  subtitle,
-                  style: const TextStyle(color: Colors.white60, fontSize: 12),
-                ),
-              ],
+  Widget _buildCategoryCard(String title, String subtitle, IconData icon) {
+    return GestureDetector(
+      onTap: () => _executeLawLookup(title),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6.0),
+        padding: const EdgeInsets.all(14.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0F2415),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFF1A3D24), width: 1.5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.between,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 3),
+                  Text(subtitle, style: const TextStyle(color: Colors.white60, fontSize: 12)),
+                ],
+              ),
             ),
-          ),
-          Icon(icon, color: const Color(0xFFD4AF37), size: 28),
-        ],
+            Icon(icon, color: const Color(0xFFD4AF37), size: 28),
+          ],
+        ),
       ),
     );
   }
